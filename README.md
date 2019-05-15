@@ -1,7 +1,7 @@
 # Bouncy Life
 
-[![curseforge downloads](http://cf.way2muchnoise.eu/full_bouncylife_downloads.svg)](https://minecraft.curseforge.com/projects/bouncylife)
-[![curseforge mc versions](http://cf.way2muchnoise.eu/versions/bouncylife.svg)](https://minecraft.curseforge.com/projects/bouncylife)
+[![curseforge downloads](http://cf.way2muchnoise.eu/full_bouncy-life_downloads.svg)](https://minecraft.curseforge.com/projects/bouncy-life)
+[![curseforge mc versions](http://cf.way2muchnoise.eu/versions/bouncy-life.svg)](https://minecraft.curseforge.com/projects/bouncy-life)
 
 ![](src/main/resources/assets/bouncylife/icon_large.png?raw=true)
 
