@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BXB",
+    "X X",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:slime_ball"
+    },
+    "B": {
+      "item": "minecraft:slime_block"
+    }
+  },
+  "result": {
+    "item": "bouncylife:slime_leggings"
+  }
+}

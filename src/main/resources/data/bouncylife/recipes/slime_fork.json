@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BSB",
+    "R R",
+    " R "
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:slime_block"
+    },
+    "S": {
+      "item": "minecraft:slime_ball"
+    },
+    "R": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "bouncylife:slime_fork"
+  }
+}

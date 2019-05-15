@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "de.siphalor.bouncylife.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"mixins": [
+		"MixinLivingEntity",
+		"MixinPlayerEntity",
+		"MixinBlock"
+	],
+	"client": [
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

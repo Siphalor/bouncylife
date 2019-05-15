@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "bouncylife:slime_shoes"
+    ]
+  },
+  "criteria": {
+    "has_slime_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:slime_ball"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "bouncylife:slime_shoes"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_slime_ingot",
+      "has_the_recipe"
+    ]
+  ]
+}
