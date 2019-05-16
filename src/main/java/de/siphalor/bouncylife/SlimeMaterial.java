@@ -47,7 +47,7 @@ public class SlimeMaterial implements ArmorMaterial {
 
 	@Override
 	public String getName() {
-		return Core.MOD_ID + ":slime";
+		return Core.MOD_ID + "_slime";
 	}
 
 	@Override

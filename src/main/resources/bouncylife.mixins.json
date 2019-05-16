@@ -4,10 +4,15 @@
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
 		"MixinLivingEntity",
+		"MixinSlimeEntity",
 		"MixinPlayerEntity",
 		"MixinBlock"
 	],
 	"client": [
+		"client.MixinAbstractClientPlayerEntity",
+		"client.MixinLivingEntityRenderer",
+		"client.MixinPlayerEntityModel",
+		"client.MixinPlayerEntityRenderer"
 	],
 	"injectors": {
 		"defaultRequire": 1
