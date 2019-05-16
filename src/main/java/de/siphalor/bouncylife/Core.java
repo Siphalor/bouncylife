@@ -1,12 +1,8 @@
 package de.siphalor.bouncylife;
 
-import de.siphalor.bouncylife.util.SlimeFeatureRendererContext;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.render.entity.feature.SlimeOverlayFeatureRenderer;
-import net.minecraft.client.render.entity.model.SlimeEntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.item.*;
@@ -22,8 +18,6 @@ public class Core implements ModInitializer {
 	public static final float PLAYER_REACH = 5.0F;
 
 	public static final Identifier BOUNCY_LIFE$SLIME_SKIN = new Identifier("textures/entity/slime/slime.png");
-	public static final SlimeEntityModel BOUNCYLIFE$SLIME_ENTITY_MODEL = new SlimeEntityModel(1);
-	public static final SlimeOverlayFeatureRenderer<LivingEntity> SLIME_OVERLAY_FEATURE_RENDERER = new SlimeOverlayFeatureRenderer<>(new SlimeFeatureRendererContext(BOUNCYLIFE$SLIME_ENTITY_MODEL));
 
 	public static ArmorMaterial slimeMaterial;
 

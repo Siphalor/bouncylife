@@ -1,6 +1,6 @@
 package de.siphalor.bouncylife.mixin.client;
 
-import de.siphalor.bouncylife.Core;
+import de.siphalor.bouncylife.client.ClientCore;
 import de.siphalor.bouncylife.util.IPlayerEntityModel;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -19,7 +19,7 @@ public class MixinLivingEntityRenderer {
 	@Inject(method = "renderFeatures", at = @At("HEAD"), cancellable = true)
 	public void renderFeatures(LivingEntity livingEntity, float f1, float f2, float f3, float f4, float f5, float f6, float f7, CallbackInfo callbackInfo) {
 		if(model instanceof IPlayerEntityModel && ((IPlayerEntityModel) model).bouncylife$isDisguisedAsSlime()) {
-			Core.SLIME_OVERLAY_FEATURE_RENDERER.render(livingEntity, f1, f2, f3, f4, f5, f6, f7);
+			ClientCore.SLIME_OVERLAY_FEATURE_RENDERER.render(livingEntity, f1, f2, f3, f4, f5, f6, f7);
 			callbackInfo.cancel();
 		}
 	}

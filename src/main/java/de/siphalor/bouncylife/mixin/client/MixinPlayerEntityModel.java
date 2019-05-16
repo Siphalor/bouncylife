@@ -1,6 +1,6 @@
 package de.siphalor.bouncylife.mixin.client;
 
-import de.siphalor.bouncylife.Core;
+import de.siphalor.bouncylife.client.ClientCore;
 import de.siphalor.bouncylife.util.IPlayerEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.LivingEntity;
@@ -16,7 +16,7 @@ public class MixinPlayerEntityModel implements IPlayerEntityModel {
 	@Inject(method = "method_17088", at = @At("HEAD"), cancellable = true)
 	public void render(LivingEntity livingEntity, float float_1, float float_2, float float_3, float float_4, float float_5, float float_6, CallbackInfo callbackInfo) {
 		if(bouncylife$slimeDisguise) {
-			Core.BOUNCYLIFE$SLIME_ENTITY_MODEL.render(livingEntity, float_1, float_2, float_3, float_4, float_5, float_6);
+			ClientCore.BOUNCYLIFE$SLIME_ENTITY_MODEL.render(livingEntity, float_1, float_2, float_3, float_4, float_5, float_6);
 			callbackInfo.cancel();
 		}
 	}
