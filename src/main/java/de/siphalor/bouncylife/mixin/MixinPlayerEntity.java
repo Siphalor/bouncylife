@@ -30,7 +30,7 @@ public abstract class MixinPlayerEntity extends LivingEntity implements IPlayerE
 			if(!Core.isSlimeArmor(stack))
 				return false;
 		}
-		return isInSneakingPose();
+		return isSneaking();
 	}
 
 	@Inject(method = "applyDamage", at = @At("HEAD"))
