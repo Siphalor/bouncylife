@@ -3,5 +3,12 @@
 	"item.bouncylife.slime_helmet": "Slimy Helmet",
 	"item.bouncylife.slime_chestplate": "Slimy Shirt",
 	"item.bouncylife.slime_leggings": "Slimy Leggings",
-	"item.bouncylife.slime_shoes": "Slimy Shoes"
+	"item.bouncylife.slime_shoes": "Slimy Shoes",
+
+	"tweed.cloth.bouncylife": "Bouncy Life Config",
+	"tweed.cloth.bouncylife.main": "General",
+	"tweed.cloth.bouncylife.main.fork-power-factor": "Fork Power Factor",
+	"tweed.cloth.bouncylife.main.fork-entity-power-factor": "Fork Entity Power Factor",
+	"tweed.cloth.bouncylife.main.velocity-dampener": "Velocity Dampener",
+	"tweed.cloth.bouncylife.main.y-bounce-tolerance": "Y Velocity Tolerance"
 }

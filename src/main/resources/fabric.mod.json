@@ -16,6 +16,9 @@
 	"entrypoints": {
 		"main": [
 			"de.siphalor.bouncylife.Core"
+		],
+		"modmenu": [
+			"de.siphalor.bouncylife.client.ModMenuEntryPoint"
 		]
 	},
 	"mixins": [

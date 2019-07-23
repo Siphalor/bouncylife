@@ -3,6 +3,8 @@ package de.siphalor.bouncylife;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.client.network.packet.EntityVelocityUpdateS2CPacket;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ProjectileUtil;
@@ -28,6 +30,7 @@ public class SlimeForkItem extends Item {
 		super(item$Settings_1);
 	}
 
+	@SuppressWarnings("WeakerAccess")
 	public static void playForkSound(World world, PlayerEntity playerEntity, BlockPos blockPos) {
 		world.playSound(playerEntity, blockPos, SoundEvents.BLOCK_SLIME_BLOCK_PLACE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		world.playSound(playerEntity, blockPos, SoundEvents.ITEM_CROSSBOW_LOADING_END, SoundCategory.PLAYERS, 1.0F, 1.0F);
@@ -41,7 +44,7 @@ public class SlimeForkItem extends Item {
 	}
 
 	@Override
-	public void onItemStopUsing(ItemStack itemStack, World world, LivingEntity livingEntity, int useTime) {
+	public void onStoppedUsing(ItemStack itemStack, World world, LivingEntity livingEntity, int useTime) {
 		if(!world.isClient()) {
 			Vec3d pos = livingEntity.getCameraPosVec(0.0F);
 			Vec3d ray = pos.add(livingEntity.getRotationVector().multiply(Core.PLAYER_REACH));
@@ -49,7 +52,8 @@ public class SlimeForkItem extends Item {
 			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(Core.PLAYER_REACH), entity -> true, Core.PLAYER_REACH);
 			if (entityHitResult != null) {
 				Entity entity = entityHitResult.getEntity();
-				Vec3d velocity = livingEntity.getRotationVector().multiply(Core.FORK_ENTITY_MULTIPLIER * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F);
+				float multiplier = Config.FORK_ENTITY_FACTOR.value * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.POWER, itemStack);
+				Vec3d velocity = livingEntity.getRotationVector().multiply(multiplier);
 				entity.addVelocity(velocity.x, velocity.y, velocity.z);
 				Packet packet = new EntityVelocityUpdateS2CPacket(entity.getEntityId(), entity.getVelocity());
 				PlayerStream.all(world.getServer()).forEach(serverPlayerEntity -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, packet));
@@ -57,7 +61,8 @@ public class SlimeForkItem extends Item {
 			} else {
 				BlockHitResult blockHitResult = world.rayTrace(new RayTraceContext(pos, ray, RayTraceContext.ShapeType.OUTLINE, RayTraceContext.FluidHandling.NONE, livingEntity));
 				if (blockHitResult.getType() == BlockHitResult.Type.BLOCK) {
-					Vec3d velocity = livingEntity.getRotationVector().multiply(-Core.FORK_MULTIPLIER * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F);
+					float multiplier = -Config.FORK_FACTOR.value * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.PUNCH, itemStack);
+					Vec3d velocity = livingEntity.getRotationVector().multiply(multiplier);
 					livingEntity.addVelocity(velocity.x, velocity.y, velocity.z);
 					Packet packet = new EntityVelocityUpdateS2CPacket(livingEntity.getEntityId(), livingEntity.getVelocity());
 					PlayerStream.all(world.getServer()).forEach(serverPlayerEntity -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, packet));
@@ -76,5 +81,10 @@ public class SlimeForkItem extends Item {
 	@Override
 	public UseAction getUseAction(ItemStack itemStack_1) {
 		return UseAction.BOW;
+	}
+
+	@Override
+	public int getEnchantability() {
+		return 2;
 	}
 }

@@ -3,5 +3,12 @@
 	"item.bouncylife.slime_helmet": "Schleimhelm",
 	"item.bouncylife.slime_chestplate": "Schleimhemd",
 	"item.bouncylife.slime_leggings": "Schleimhose",
-	"item.bouncylife.slime_shoes": "Schleimschuhe"
+	"item.bouncylife.slime_shoes": "Schleimschuhe",
+
+	"tweed.cloth.bouncylife": "Bouncy Life Optionen",
+	"tweed.cloth.bouncylife.main": "Allgemein",
+	"tweed.cloth.bouncylife.main.fork-power-factor": "Zwillenstärkefaktor",
+	"tweed.cloth.bouncylife.main.fork-entity-power-factor": "Zwillenstärkefaktor gegen Wesen",
+	"tweed.cloth.bouncylife.main.velocity-dampener": "Geschwindigkeitsdämpfung",
+	"tweed.cloth.bouncylife.main.y-bounce-tolerance": "Vertikale Geschwindigkeitstoleranz"
 }
