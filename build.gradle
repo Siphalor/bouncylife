@@ -38,8 +38,8 @@ dependencies {
 	modCompile "com.github.siphalor:tweed-api:${project.tweed_version}"
 	include "com.github.siphalor:tweed-api:${project.tweed_version}"
 
-	modCompile "me.shedaniel.cloth:config-2:0.4.1"
-	include "me.shedaniel.cloth:config-2:0.4.1"
+	//modCompile "me.shedaniel.cloth:config-2:0.4.1"
+	//inlude "me.shedaniel.cloth:config-2:0.4.1"
 
 	modImplementation "io.github.prospector.modmenu:ModMenu:+"
 }

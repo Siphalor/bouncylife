@@ -10,5 +10,6 @@
 	"tweed.cloth.bouncylife.main.fork-power-factor": "Zwillenstärkefaktor",
 	"tweed.cloth.bouncylife.main.fork-entity-power-factor": "Zwillenstärkefaktor gegen Wesen",
 	"tweed.cloth.bouncylife.main.velocity-dampener": "Geschwindigkeitsdämpfung",
+	"tweed.cloth.bouncylife.main.sneak-velocity-dampener": "Schleich-Geschwindigkeitsdämpfung",
 	"tweed.cloth.bouncylife.main.y-bounce-tolerance": "Vertikale Geschwindigkeitstoleranz"
 }

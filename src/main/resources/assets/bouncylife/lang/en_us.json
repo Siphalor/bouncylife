@@ -10,5 +10,6 @@
 	"tweed.cloth.bouncylife.main.fork-power-factor": "Fork Power Factor",
 	"tweed.cloth.bouncylife.main.fork-entity-power-factor": "Fork Entity Power Factor",
 	"tweed.cloth.bouncylife.main.velocity-dampener": "Velocity Dampener",
+	"tweed.cloth.bouncylife.main.sneak-velocity-dampener": "Sneak Velocity Dampener",
 	"tweed.cloth.bouncylife.main.y-bounce-tolerance": "Y Velocity Tolerance"
 }

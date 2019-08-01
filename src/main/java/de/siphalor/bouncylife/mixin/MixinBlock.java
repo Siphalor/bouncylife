@@ -22,7 +22,7 @@ public class MixinBlock {
 		if(entity instanceof LivingEntity && Math.abs(entity.getVelocity().getY()) > Config.Y_BOUNCE_TOLERANCE.value) {
             for(ItemStack stack : entity.getArmorItems()) {
             	if(stack.getItem() == Core.shoes) {
-            		entity.setVelocity(entity.getVelocity().multiply(1.0F, entity.isSneaking() ? Config.SNEAK_VELOCITY_DAMPENER.value : -Config.VELOCITY_DAMPENER.value, 1.0F));
+            		entity.setVelocity(entity.getVelocity().multiply(1.0F, entity.isSneaking() ? -Config.SNEAK_VELOCITY_DAMPENER.value : -Config.VELOCITY_DAMPENER.value, 1.0F));
             		entity.world.playSound(null, entity.getBlockPos(), SoundEvents.BLOCK_SLIME_BLOCK_FALL, SoundCategory.PLAYERS, 1.0F, 0.5F);
             		callbackInfo.cancel();
             		return;

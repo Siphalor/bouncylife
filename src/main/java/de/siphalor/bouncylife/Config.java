@@ -18,7 +18,7 @@ public class Config {
 	public static final FloatEntry VELOCITY_DAMPENER = FILE.register("velocity-dampener", new FloatEntry(1.0F))
 		.addConstraint(new RangeConstraint<Float>().greaterThan(0.0F))
 		.setComment("The percentage the velocity is additionally changed to when bouncing of the ground");
-	public static final FloatEntry SNEAK_VELOCITY_DAMPENER = FILE.register("velocity-dampener", new FloatEntry(1.0F))
+	public static final FloatEntry SNEAK_VELOCITY_DAMPENER = FILE.register("sneak-velocity-dampener", new FloatEntry(0.5F))
 		.addConstraint(new RangeConstraint<Float>().greaterThan(0.0F))
 		.setComment("The percentage the velocity is additionally changed to when bouncing of the ground while sneaking");
 	public static final FloatEntry Y_BOUNCE_TOLERANCE = FILE.register("y-bounce-tolerance", new FloatEntry(0.7F))
