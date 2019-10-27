@@ -57,7 +57,8 @@ public class Core implements ModInitializer {
 					slimeAmount += (float)((ArmorItem) stack.getItem()).getProtection();
 				}
 			}
-			damageSource.getAttacker().damage(DamageSource.thorns(attackedEntity), (baseDamage - resultedDamage) * slimeAmount / 7.0F);
+            if(slimeAmount > 0.0F)
+				damageSource.getAttacker().damage(DamageSource.thorns(attackedEntity), (baseDamage - resultedDamage) * slimeAmount / 7.0F);
 		}
 	}
 }
