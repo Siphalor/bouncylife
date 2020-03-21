@@ -9,7 +9,7 @@ import de.siphalor.tweed.config.entry.FloatEntry;
 
 @SuppressWarnings("WeakerAccess")
 public class Config {
-	public static final ConfigFile FILE = TweedRegistry.registerConfigFile(Core.MOD_ID).setEnvironment(ConfigEnvironment.SERVER).setScope(ConfigScope.SMALLEST);
+	public static final ConfigFile FILE = TweedRegistry.registerConfigFile(BouncyLife.MOD_ID).setEnvironment(ConfigEnvironment.SERVER).setScope(ConfigScope.SMALLEST);
 
 	public static final FloatEntry FORK_FACTOR = FILE.register("fork-power-factor", new FloatEntry(1.8F))
 		.setComment("Sets the factor used when determining the velocity after the fork has been used");

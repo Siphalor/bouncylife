@@ -47,11 +47,16 @@ public class SlimeMaterial implements ArmorMaterial {
 
 	@Override
 	public String getName() {
-		return Core.MOD_ID + "_slime";
+		return BouncyLife.MOD_ID + "_slime";
 	}
 
 	@Override
 	public float getToughness() {
-		return 0;
+		return 0f;
+	}
+
+	@Override
+	public float getKnockbackResistance() {
+		return -0.2f;
 	}
 }

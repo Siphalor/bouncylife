@@ -15,7 +15,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"de.siphalor.bouncylife.Core"
+			"de.siphalor.bouncylife.BouncyLife"
 		],
 		"modmenu": [
 			"de.siphalor.bouncylife.client.ModMenuEntryPoint"

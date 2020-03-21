@@ -8,12 +8,6 @@
 		"MixinPlayerEntity",
 		"MixinBlock"
 	],
-	"client": [
-		"client.MixinAbstractClientPlayerEntity",
-		"client.MixinLivingEntityRenderer",
-		"client.MixinPlayerEntityModel",
-		"client.MixinPlayerEntityRenderer"
-	],
 	"injectors": {
 		"defaultRequire": 1
 	}

@@ -2,16 +2,16 @@ package de.siphalor.bouncylife;
 
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
-import net.minecraft.client.network.packet.EntityVelocityUpdateS2CPacket;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ProjectileUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
@@ -47,9 +47,9 @@ public class SlimeForkItem extends Item {
 	public void onStoppedUsing(ItemStack itemStack, World world, LivingEntity livingEntity, int useTime) {
 		if(!world.isClient()) {
 			Vec3d pos = livingEntity.getCameraPosVec(0.0F);
-			Vec3d ray = pos.add(livingEntity.getRotationVector().multiply(Core.PLAYER_REACH));
+			Vec3d ray = pos.add(livingEntity.getRotationVector().multiply(BouncyLife.PLAYER_REACH));
 
-			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(Core.PLAYER_REACH), entity -> true, Core.PLAYER_REACH);
+			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(BouncyLife.PLAYER_REACH), entity -> true, BouncyLife.PLAYER_REACH);
 			if (entityHitResult != null) {
 				Entity entity = entityHitResult.getEntity();
 				float multiplier = Config.FORK_ENTITY_FACTOR.value * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.POWER, itemStack);

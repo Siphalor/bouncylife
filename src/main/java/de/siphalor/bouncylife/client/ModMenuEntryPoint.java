@@ -1,7 +1,7 @@
 package de.siphalor.bouncylife.client;
 
 import de.siphalor.bouncylife.Config;
-import de.siphalor.bouncylife.Core;
+import de.siphalor.bouncylife.BouncyLife;
 import de.siphalor.tweed.client.TweedClothBridge;
 import io.github.prospector.modmenu.api.ModMenuApi;
 import net.minecraft.client.gui.screen.Screen;
@@ -13,7 +13,7 @@ public class ModMenuEntryPoint implements ModMenuApi {
 
 	@Override
 	public String getModId() {
-		return Core.MOD_ID;
+		return BouncyLife.MOD_ID;
 	}
 
 	@Override

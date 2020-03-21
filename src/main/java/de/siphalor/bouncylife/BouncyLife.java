@@ -10,11 +10,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 @SuppressWarnings("WeakerAccess")
-public class Core implements ModInitializer {
+public class BouncyLife implements ModInitializer {
 	public static final String MOD_ID = "bouncylife";
 	public static final float PLAYER_REACH = 5.0F;
-
-	public static final Identifier BOUNCY_LIFE$SLIME_SKIN = new Identifier("textures/entity/slime/slime.png");
 
 	public static ArmorMaterial slimeMaterial;
 
@@ -53,7 +51,7 @@ public class Core implements ModInitializer {
 		if(damageSource instanceof EntityDamageSource && damageSource.getAttacker() != null) {
             float slimeAmount = 0.0F;
             for(ItemStack stack : attackedEntity.getArmorItems()) {
-            	if(Core.isSlimeArmor(stack)) {
+            	if(BouncyLife.isSlimeArmor(stack)) {
 					slimeAmount += (float)((ArmorItem) stack.getItem()).getProtection();
 				}
 			}
