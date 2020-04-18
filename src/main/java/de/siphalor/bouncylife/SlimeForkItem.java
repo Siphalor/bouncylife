@@ -49,7 +49,7 @@ public class SlimeForkItem extends Item {
 			Vec3d pos = livingEntity.getCameraPosVec(0.0F);
 			Vec3d ray = pos.add(livingEntity.getRotationVector().multiply(BouncyLife.PLAYER_REACH));
 
-			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(BouncyLife.PLAYER_REACH), entity -> true, BouncyLife.PLAYER_REACH);
+			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(BouncyLife.PLAYER_REACH), entity -> true);
 			if (entityHitResult != null) {
 				Entity entity = entityHitResult.getEntity();
 				float multiplier = Config.FORK_ENTITY_FACTOR.value * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.POWER, itemStack);
