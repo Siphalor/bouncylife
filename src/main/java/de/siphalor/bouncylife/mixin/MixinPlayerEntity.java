@@ -1,7 +1,6 @@
 package de.siphalor.bouncylife.mixin;
 
 import de.siphalor.bouncylife.BouncyLife;
-import de.siphalor.bouncylife.util.IPlayerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -15,22 +14,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntity.class)
-public abstract class MixinPlayerEntity extends LivingEntity implements IPlayerEntity {
+public abstract class MixinPlayerEntity extends LivingEntity {
 	@Shadow public abstract Iterable<ItemStack> getArmorItems();
 
 	private float bouncylife$damageAmount = 0.0F;
 
 	protected MixinPlayerEntity(EntityType<? extends LivingEntity> entityType_1, World world_1) {
 		super(entityType_1, world_1);
-	}
-
-	@Override
-	public boolean bouncylife$isDisguisedAsSlime() {
-		for(ItemStack stack : getArmorItems()) {
-			if(!BouncyLife.isSlimeArmor(stack))
-				return false;
-		}
-		return isSneaking();
 	}
 
 	@Inject(method = "applyDamage", at = @At("HEAD"))

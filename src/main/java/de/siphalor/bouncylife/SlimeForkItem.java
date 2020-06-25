@@ -6,8 +6,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ProjectileUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
@@ -55,7 +55,7 @@ public class SlimeForkItem extends Item {
 				float multiplier = BLConfig.forkEntityFactor * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.POWER, itemStack);
 				Vec3d velocity = livingEntity.getRotationVector().multiply(multiplier);
 				entity.addVelocity(velocity.x, velocity.y, velocity.z);
-				Packet packet = new EntityVelocityUpdateS2CPacket(entity.getEntityId(), entity.getVelocity());
+				Packet<?> packet = new EntityVelocityUpdateS2CPacket(entity.getEntityId(), entity.getVelocity());
 				PlayerStream.all(world.getServer()).forEach(serverPlayerEntity -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, packet));
 				playForkSound(world, null, entity.getBlockPos());
 			} else {
@@ -64,7 +64,7 @@ public class SlimeForkItem extends Item {
 					float multiplier = -BLConfig.forkFactor * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.PUNCH, itemStack);
 					Vec3d velocity = livingEntity.getRotationVector().multiply(multiplier);
 					livingEntity.addVelocity(velocity.x, velocity.y, velocity.z);
-					Packet packet = new EntityVelocityUpdateS2CPacket(livingEntity.getEntityId(), livingEntity.getVelocity());
+					Packet<?> packet = new EntityVelocityUpdateS2CPacket(livingEntity.getEntityId(), livingEntity.getVelocity());
 					PlayerStream.all(world.getServer()).forEach(serverPlayerEntity -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, packet));
 					playForkSound(world, null, livingEntity.getBlockPos());
 				} else

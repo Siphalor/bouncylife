@@ -3,10 +3,11 @@
 	"package": "de.siphalor.bouncylife.mixin",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
+		"MixinBlock",
 		"MixinLivingEntity",
-		"MixinSlimeEntity",
+		"MixinMobEntity",
 		"MixinPlayerEntity",
-		"MixinBlock"
+		"MixinSlimeEntity"
 	],
 	"injectors": {
 		"defaultRequire": 1
