@@ -52,7 +52,7 @@ public class SlimeForkItem extends Item {
 			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(BouncyLife.PLAYER_REACH), entity -> true);
 			if (entityHitResult != null) {
 				Entity entity = entityHitResult.getEntity();
-				float multiplier = Config.FORK_ENTITY_FACTOR.value * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.POWER, itemStack);
+				float multiplier = BLConfig.forkEntityFactor * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.POWER, itemStack);
 				Vec3d velocity = livingEntity.getRotationVector().multiply(multiplier);
 				entity.addVelocity(velocity.x, velocity.y, velocity.z);
 				Packet packet = new EntityVelocityUpdateS2CPacket(entity.getEntityId(), entity.getVelocity());
@@ -61,7 +61,7 @@ public class SlimeForkItem extends Item {
 			} else {
 				BlockHitResult blockHitResult = world.rayTrace(new RayTraceContext(pos, ray, RayTraceContext.ShapeType.OUTLINE, RayTraceContext.FluidHandling.NONE, livingEntity));
 				if (blockHitResult.getType() == BlockHitResult.Type.BLOCK) {
-					float multiplier = -Config.FORK_FACTOR.value * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.PUNCH, itemStack);
+					float multiplier = -BLConfig.forkFactor * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.PUNCH, itemStack);
 					Vec3d velocity = livingEntity.getRotationVector().multiply(multiplier);
 					livingEntity.addVelocity(velocity.x, velocity.y, velocity.z);
 					Packet packet = new EntityVelocityUpdateS2CPacket(livingEntity.getEntityId(), livingEntity.getVelocity());

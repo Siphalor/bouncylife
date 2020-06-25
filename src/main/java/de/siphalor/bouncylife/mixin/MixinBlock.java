@@ -1,7 +1,7 @@
 package de.siphalor.bouncylife.mixin;
 
+import de.siphalor.bouncylife.BLConfig;
 import de.siphalor.bouncylife.BouncyLife;
-import de.siphalor.bouncylife.Config;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -19,10 +19,10 @@ public class MixinBlock {
 	@SuppressWarnings("WeakerAccess")
 	@Inject(method = "onEntityLand", at = @At("HEAD"), cancellable = true)
 	public void onEntityLand(BlockView blockView, Entity entity, CallbackInfo callbackInfo) {
-		if(entity instanceof LivingEntity && Math.abs(entity.getVelocity().getY()) > Config.Y_BOUNCE_TOLERANCE.value) {
+		if(entity instanceof LivingEntity && Math.abs(entity.getVelocity().getY()) > BLConfig.yBounceTolerance) {
             for(ItemStack stack : entity.getArmorItems()) {
             	if(stack.getItem() == BouncyLife.shoes) {
-            		entity.setVelocity(entity.getVelocity().multiply(1.0F, entity.isSneaking() ? -Config.SNEAK_VELOCITY_DAMPENER.value : -Config.VELOCITY_DAMPENER.value, 1.0F));
+            		entity.setVelocity(entity.getVelocity().multiply(1.0F, entity.isSneaking() ? -BLConfig.sneakVelocityDampener : -BLConfig.velocityDampener, 1.0F));
             		entity.world.playSound(null, entity.getBlockPos(), SoundEvents.BLOCK_SLIME_BLOCK_FALL, SoundCategory.PLAYERS, 1.0F, 0.5F);
             		callbackInfo.cancel();
             		return;

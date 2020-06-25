@@ -25,8 +25,6 @@ public class BouncyLife implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Config.initialize();
-
 		slimeMaterial = new SlimeMaterial();
 
 		helmet = new ArmorItem(slimeMaterial, EquipmentSlot.HEAD, new Item.Settings().group(ItemGroup.COMBAT));

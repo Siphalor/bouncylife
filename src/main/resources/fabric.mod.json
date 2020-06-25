@@ -17,8 +17,8 @@
 		"main": [
 			"de.siphalor.bouncylife.BouncyLife"
 		],
-		"modmenu": [
-			"de.siphalor.bouncylife.client.ModMenuEntryPoint"
+		"tweed:config": [
+			"de.siphalor.bouncylife.BLConfig"
 		]
 	},
 	"mixins": [
