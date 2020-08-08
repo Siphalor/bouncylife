@@ -1,0 +1,13 @@
+{
+	"additions": [
+		"#bouncylife:colored_slime_blocks"
+	],
+	"targets": [
+		"minecraft:slime_block"
+	],
+	"recipes": {
+		"ids": [
+			"/(?!minecraft:slime_ball).*/"
+		]
+	}
+}

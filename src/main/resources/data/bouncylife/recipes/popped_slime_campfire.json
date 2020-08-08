@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "ingredient": {
+    "item": "bouncylife:slime_on_a_stick"
+  },
+  "result": "bouncylife:popped_slime",
+  "experience": 0.35,
+  "cookingtime": 600
+}

@@ -3,14 +3,27 @@ package de.siphalor.bouncylife;
 import de.siphalor.bouncylife.client.render.PetSlimeEntityRenderer;
 import de.siphalor.bouncylife.entity.PetSlimeEntity;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.entity.FabricEntityTypeBuilder;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.Material;
+import net.minecraft.block.SlimeBlock;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.SoundManager;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.EntityDamageSource;
+import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -29,6 +42,11 @@ public class BouncyLife implements ModInitializer {
 
 	public static SlimeForkItem slimeFork;
 
+	public static Item slimeOnAStick;
+	public static Item poppedSlime;
+
+	public static Block[] slimeBlocks;
+
 	public static EntityType<PetSlimeEntity> petSlimeEntityType;
 
 	@Override
@@ -40,17 +58,54 @@ public class BouncyLife implements ModInitializer {
 		leggings = new ArmorItem(slimeMaterial, EquipmentSlot.LEGS, new Item.Settings().group(ItemGroup.COMBAT));
 		shoes = new ArmorItem(slimeMaterial, EquipmentSlot.FEET, new Item.Settings().group(ItemGroup.COMBAT));
 		slimeFork = new SlimeForkItem(new Item.Settings().maxDamage(100).group(ItemGroup.MISC));
+		slimeOnAStick = new Item(new Item.Settings().maxCount(1));
+		poppedSlime = new PoppedSlimeItem(new Item.Settings().maxCount(1).group(ItemGroup.FOOD).food(new FoodComponent.Builder().hunger(3).saturationModifier(0.8F).build()));
 
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_helmet"), helmet);
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_chestplate"), chestplate);
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_leggings"), leggings);
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_shoes"), shoes);
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_fork"), slimeFork);
+		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_on_a_stick"), slimeOnAStick);
+		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "popped_slime"), poppedSlime);
+
+		slimeBlocks = new Block[DyeColor.values().length];
+		for (DyeColor color : DyeColor.values()) {
+			Block block = new SlimeBlock(FabricBlockSettings.copy(Blocks.SLIME_BLOCK).materialColor(color).build());
+			Identifier identifier = new Identifier(MOD_ID, color.getName() + "_slime_block");
+			Registry.register(Registry.BLOCK, identifier, block);
+			BlockItem item = new BlockItem(block, new Item.Settings().group(ItemGroup.DECORATIONS));
+			slimeBlocks[color.getId()] = block;
+			Registry.register(Registry.ITEM, identifier, item);
+			item.appendBlocks(Item.BLOCK_ITEMS, item);
+
+			Registry.register(Registry.ITEM, new Identifier(MOD_ID, color.getName() + "_slime_ball"), new Item(new Item.Settings().group(ItemGroup.MISC)));
+		}
 
 		petSlimeEntityType = FabricEntityTypeBuilder.create(EntityCategory.CREATURE, PetSlimeEntity::new)
 				.size(EntityDimensions.changing(2.04F, 2.04F))
 				.build();
 		Registry.register(Registry.ENTITY_TYPE, new Identifier(MOD_ID, "pet_slime"), petSlimeEntityType);
+
+		AttackEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
+			if (!world.isClient()) {
+				if (
+						(entity instanceof SlimeEntity && ((SlimeEntity) entity).getSize() == 1) ||
+								(entity instanceof PetSlimeEntity && ((PetSlimeEntity) entity).getSize() == 1)
+				) {
+					if (playerEntity.getStackInHand(hand).getItem() == Items.STICK) {
+						world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+						entity.remove();
+						if (!playerEntity.isCreative()) {
+							playerEntity.getStackInHand(hand).decrement(1);
+						}
+						playerEntity.giveItemStack(new ItemStack(slimeOnAStick));
+						return ActionResult.SUCCESS;
+					}
+				}
+			}
+			return ActionResult.PASS;
+		});
 	}
 
 	public static boolean isSlimeArmor(ItemStack stack) {

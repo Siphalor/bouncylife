@@ -1,0 +1,20 @@
+{
+	"values": [
+		"bouncylife:red_slime_block",
+		"bouncylife:orange_slime_block",
+		"bouncylife:brown_slime_block",
+		"bouncylife:yellow_slime_block",
+		"bouncylife:lime_slime_block",
+		"bouncylife:green_slime_block",
+		"bouncylife:cyan_slime_block",
+		"bouncylife:light_blue_slime_block",
+		"bouncylife:blue_slime_block",
+		"bouncylife:pink_slime_block",
+		"bouncylife:magenta_slime_block",
+		"bouncylife:purple_slime_block",
+		"bouncylife:white_slime_block",
+		"bouncylife:light_gray_slime_block",
+		"bouncylife:gray_slime_block",
+		"bouncylife:black_slime_block"
+	]
+}

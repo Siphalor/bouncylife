@@ -45,6 +45,8 @@ dependencies {
 	}
 	include "de.siphalor:tweed-1.16:${project.tweed_version}"
 
+	modCompile "de.siphalor:pushtocraft-1.15:1.0.4+"
+
 	//modCompile "me.shedaniel.cloth:config-2:0.4.1"
 	//inlude "me.shedaniel.cloth:config-2:0.4.1"
 }

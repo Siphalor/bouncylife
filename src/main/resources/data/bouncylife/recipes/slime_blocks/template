@@ -1,0 +1,17 @@
+$%color%_slime_block.json
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "bouncylife:%color%_slime_ball"
+    }
+  },
+  "result": {
+    "item": "bouncylife:%color%_slime_block"
+  }
+}

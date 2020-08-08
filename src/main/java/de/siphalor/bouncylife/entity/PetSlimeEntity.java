@@ -18,6 +18,7 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
@@ -28,6 +29,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -37,10 +39,14 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
 
 import java.util.EnumSet;
+import java.util.OptionalInt;
 
 public class PetSlimeEntity extends TameableEntity {
 	private static final TrackedData<Integer> SLIME_SIZE;
+	private static final TrackedData<OptionalInt> COLOR;
 	private static final Ingredient TEMPT_INGREDIENT = Ingredient.ofItems(Items.HONEY_BOTTLE, Items.ROTTEN_FLESH);
+
+	private static final Identifier PLAIN_LOOT_TABLE = new Identifier(BouncyLife.MOD_ID, "entities/pet_slime/plain");
 
 	public float targetStretch;
 	public float stretch;
@@ -83,6 +89,7 @@ public class PetSlimeEntity extends TameableEntity {
 	protected void initDataTracker() {
 		super.initDataTracker();
 		this.dataTracker.startTracking(SLIME_SIZE, 1);
+		this.dataTracker.startTracking(COLOR, OptionalInt.empty());
 	}
 
 	protected void initAttributes() {
@@ -110,9 +117,27 @@ public class PetSlimeEntity extends TameableEntity {
 		return this.dataTracker.get(SLIME_SIZE);
 	}
 
+	public void setColor(DyeColor dyeColor) {
+		if (dyeColor == null) {
+			dataTracker.set(COLOR, OptionalInt.empty());
+		} else {
+			dataTracker.set(COLOR, OptionalInt.of(dyeColor.getId()));
+		}
+	}
+
+	public DyeColor getColor() {
+		OptionalInt colorId = dataTracker.get(COLOR);
+		if (colorId.isPresent()) {
+			return DyeColor.byId(colorId.getAsInt());
+		}
+		return null;
+	}
+
 	public void writeCustomDataToTag(CompoundTag tag) {
 		super.writeCustomDataToTag(tag);
 		tag.putInt("Size", this.getSize() - 1);
+		if (getColor() != null)
+			tag.putString("Color", getColor().getName());
 		tag.putBoolean("wasOnGround", this.onGroundLastTick);
 	}
 
@@ -122,6 +147,7 @@ public class PetSlimeEntity extends TameableEntity {
 			i = 0;
 		}
 
+		setColor(DyeColor.byName(tag.getString("Color"), null));
 		this.setSize(i + 1, false);
 		super.readCustomDataFromTag(tag);
 		this.onGroundLastTick = tag.getBoolean("wasOnGround");
@@ -214,6 +240,7 @@ public class PetSlimeEntity extends TameableEntity {
 				slimeEntity.setAiDisabled(bl);
 				slimeEntity.setInvulnerable(this.isInvulnerable());
 				slimeEntity.setSize(j, true);
+				slimeEntity.setColor(getColor());
 				slimeEntity.refreshPositionAndAngles(this.getX() + (double)g, this.getY() + 0.5D, this.getZ() + (double)h, this.random.nextFloat() * 360.0F, 0.0F);
 				this.world.spawnEntity(slimeEntity);
 			}
@@ -271,6 +298,9 @@ public class PetSlimeEntity extends TameableEntity {
 				} else {
 					world.sendEntityStatus(this, (byte) 8);
 				}
+			} else if (stack.getItem() instanceof DyeItem) {
+				setColor(((DyeItem) stack.getItem()).getColor());
+				stack.decrement(1);
 			}
 		}
 		return super.interactMob(player, hand);
@@ -289,7 +319,13 @@ public class PetSlimeEntity extends TameableEntity {
 	}
 
 	protected Identifier getLootTableId() {
-		return this.getSize() == 1 ? this.getType().getLootTableId() : LootTables.EMPTY;
+		if (getSize() != 1)
+			return LootTables.EMPTY;
+		DyeColor color = getColor();
+		if (color == null) {
+			return PLAIN_LOOT_TABLE;
+		}
+		return new Identifier(BouncyLife.MOD_ID, "entities/pet_slime/" + color.getName());
 	}
 
 	protected float getSoundVolume() {
@@ -386,6 +422,7 @@ public class PetSlimeEntity extends TameableEntity {
 
 	static {
 		SLIME_SIZE = DataTracker.registerData(PetSlimeEntity.class, TrackedDataHandlerRegistry.INTEGER);
+		COLOR = DataTracker.registerData(PetSlimeEntity.class, TrackedDataHandlerRegistry.field_17910);
 	}
 
 	static class MoveGoal extends Goal {

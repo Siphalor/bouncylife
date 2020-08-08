@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "bouncylife:gray_slime_ball"
+    }
+  },
+  "result": {
+    "item": "bouncylife:gray_slime_block"
+  }
+}

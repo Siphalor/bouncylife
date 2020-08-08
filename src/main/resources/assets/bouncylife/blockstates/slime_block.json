@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "": { "model": "bouncylife:block/%color%_slime_block" }
+    }
+}

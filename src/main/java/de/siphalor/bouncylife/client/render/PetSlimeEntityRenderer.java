@@ -1,32 +1,38 @@
 package de.siphalor.bouncylife.client.render;
 
+import de.siphalor.bouncylife.BouncyLife;
 import de.siphalor.bouncylife.entity.PetSlimeEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.feature.SlimeOverlayFeatureRenderer;
-import net.minecraft.client.render.entity.model.SlimeEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.SlimeEntity;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class PetSlimeEntityRenderer extends MobEntityRenderer<PetSlimeEntity, SlimeEntityModel<PetSlimeEntity>> {
+public class PetSlimeEntityRenderer extends MobEntityRenderer<PetSlimeEntity, PetSlimeEntityModel<PetSlimeEntity>> {
    private static final Identifier TEXTURE = new Identifier("textures/entity/slime/slime.png");
+   private static final Identifier TINTABLE_TEXTURE = new Identifier(BouncyLife.MOD_ID, "textures/entity/pet_slime/tintable.png");
 
    public PetSlimeEntityRenderer(EntityRenderDispatcher entityRenderDispatcher) {
-      super(entityRenderDispatcher, new SlimeEntityModel<>(16), 0.25F);
-      //this.addFeature(new SlimeOverlayFeatureRenderer<>(this));
-      this.addFeature(new PetSlimeEntityBowFeatureRenderer(this));
+      super(entityRenderDispatcher, new PetSlimeEntityModel<>(16), 0.25F);
+      this.addFeature(new PetSlimeOverlayFeatureRenderer<>(this));
+      this.addFeature(new PetSlimeBowFeatureRenderer(this));
    }
 
    @Override
    public void render(PetSlimeEntity entity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
       this.shadowSize = 0.25F * (float)entity.getSize();
+      DyeColor dyeColor = entity.getColor();
+      if (dyeColor == null) {
+         model.setColorMultiplier(1F, 1F, 1F);
+      } else {
+         float[] color = dyeColor.getColorComponents();
+         model.setColorMultiplier(color[0], color[1], color[2]);
+      }
       super.render(entity, f, g, matrixStack, vertexConsumerProvider, i);
    }
 
@@ -41,6 +47,6 @@ public class PetSlimeEntityRenderer extends MobEntityRenderer<PetSlimeEntity, Sl
    }
 
    public Identifier getTexture(PetSlimeEntity entity) {
-      return TEXTURE;
+      return entity.getColor() == null ? TEXTURE : TINTABLE_TEXTURE;
    }
 }

@@ -1,0 +1,13 @@
+$%color%_slime_ball.json
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "bouncylife:%color%_slime_block"
+    }
+  ],
+  "result": {
+    "item": "bouncylife:%color%_slime_ball",
+    "count": 9
+  }
+}

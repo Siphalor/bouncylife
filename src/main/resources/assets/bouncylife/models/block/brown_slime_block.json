@@ -1,0 +1,7 @@
+{
+	"parent": "block/slime_block",
+    "textures": {
+        "particle": "bouncylife:block/brown_slime_block",
+        "texture": "bouncylife:block/brown_slime_block"
+    }
+}

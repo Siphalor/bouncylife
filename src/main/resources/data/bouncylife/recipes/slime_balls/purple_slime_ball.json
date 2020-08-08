@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "bouncylife:purple_slime_block"
+    }
+  ],
+  "result": {
+    "item": "bouncylife:purple_slime_ball",
+    "count": 9
+  }
+}
