@@ -21,6 +21,7 @@ public class PetSlimeEntityRenderer extends MobEntityRenderer<PetSlimeEntity, Pe
       super(entityRenderDispatcher, new PetSlimeEntityModel<>(16), 0.25F);
       this.addFeature(new PetSlimeOverlayFeatureRenderer<>(this));
       this.addFeature(new PetSlimeBowFeatureRenderer(this));
+      this.addFeature(new PetSlimeSaddleFeatureRenderer(this));
    }
 
    @Override
