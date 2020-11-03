@@ -38,14 +38,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.minecraft_version}+build.${project.yarn_mappings}"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modCompile "net.fabricmc.fabric-api:fabric-api-base:+"
-	include "net.fabricmc.fabric-api:fabric-api-base:+"
-	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:+"
-	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:+"
-	modCompile "net.fabricmc.fabric-api:fabric-networking-v0:+"
-	include "net.fabricmc.fabric-api:fabric-networking-v0:+"
-	modCompile "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:+"
-	include "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:+"
+	modCompile "net.fabricmc.fabric-api:fabric-api:0.25.1+build.416-1.16"
 
 	modCompile("de.siphalor:tweed-1.16:${project.tweed_version}") {
 		exclude group: "net.fabricmc.fabric-api"
