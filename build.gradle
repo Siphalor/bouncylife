@@ -23,6 +23,10 @@ repositories {
 		url "https://minecraft.curseforge.com/api/maven"
 	}
 	maven {
+		name "Siphalor's maven"
+		url "https://maven.siphalor.de"
+	}
+	maven {
 		name "jitpack"
 		url "https://jitpack.io"
 	}
@@ -43,10 +47,10 @@ dependencies {
 	modCompile "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:+"
 	include "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:+"
 
-	modCompile("com.github.siphalor:tweed-api:${project.tweed_version}") {
+	modCompile("de.siphalor:tweed-1.16:${project.tweed_version}") {
 		exclude group: "net.fabricmc.fabric-api"
 	}
-	include "com.github.siphalor:tweed-api:${project.tweed_version}"
+	include "de.siphalor:tweed-1.16:${project.tweed_version}"
 
 	//modCompile "me.shedaniel.cloth:config-2:0.4.1"
 	//inlude "me.shedaniel.cloth:config-2:0.4.1"
