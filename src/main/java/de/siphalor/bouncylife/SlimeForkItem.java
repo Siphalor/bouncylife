@@ -22,7 +22,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 public class SlimeForkItem extends Item {
@@ -59,7 +59,7 @@ public class SlimeForkItem extends Item {
 				PlayerStream.all(world.getServer()).forEach(serverPlayerEntity -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, packet));
 				playForkSound(world, null, entity.getBlockPos());
 			} else {
-				BlockHitResult blockHitResult = world.rayTrace(new RayTraceContext(pos, ray, RayTraceContext.ShapeType.OUTLINE, RayTraceContext.FluidHandling.NONE, livingEntity));
+				BlockHitResult blockHitResult = world.raycast(new RaycastContext(pos, ray, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, livingEntity));
 				if (blockHitResult.getType() == BlockHitResult.Type.BLOCK) {
 					float multiplier = -BLConfig.forkFactor * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.PUNCH, itemStack);
 					Vec3d velocity = livingEntity.getRotationVector().multiply(multiplier);
