@@ -26,21 +26,21 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 public class SlimeForkItem extends Item {
-	SlimeForkItem(Settings item$Settings_1) {
-		super(item$Settings_1);
+	SlimeForkItem(Settings settings) {
+		super(settings);
 	}
 
 	@SuppressWarnings("WeakerAccess")
-	public static void playForkSound(World world, PlayerEntity playerEntity, BlockPos blockPos) {
-		world.playSound(playerEntity, blockPos, SoundEvents.BLOCK_SLIME_BLOCK_PLACE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-		world.playSound(playerEntity, blockPos, SoundEvents.ITEM_CROSSBOW_LOADING_END, SoundCategory.PLAYERS, 1.0F, 1.0F);
+	public static void playForkSound(World world, PlayerEntity player, BlockPos blockPos) {
+		world.playSound(player, blockPos, SoundEvents.BLOCK_SLIME_BLOCK_PLACE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSound(player, blockPos, SoundEvents.ITEM_CROSSBOW_LOADING_END, SoundCategory.PLAYERS, 1.0F, 1.0F);
 	}
 
 	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity playerEntity, Hand hand) {
-		playerEntity.setCurrentHand(hand);
-		world.playSound(null, playerEntity.getBlockPos(), SoundEvents.ITEM_CROSSBOW_LOADING_MIDDLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-		return new TypedActionResult<>(ActionResult.SUCCESS, playerEntity.getStackInHand(hand));
+	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		player.setCurrentHand(hand);
+		world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_CROSSBOW_LOADING_MIDDLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
 	}
 
 	@Override
@@ -65,12 +65,12 @@ public class SlimeForkItem extends Item {
 	}
 
 	@Override
-	public int getMaxUseTime(ItemStack itemStack_1) {
+	public int getMaxUseTime(ItemStack stack) {
 		return 72000;
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack itemStack_1) {
+	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.BOW;
 	}
 
