@@ -42,6 +42,7 @@ public abstract class MixinMobEntity extends LivingEntity {
 				if (random.nextInt(randBound) == 0) {
 					PetSlimeEntity petSlimeEntity = PetSlimeEntity.of((SlimeEntity) (Object) this);
 					petSlimeEntity.setOwner(playerEntity);
+					petSlimeEntity.setPersistent();
 					removed = true;
 					world.spawnEntity(petSlimeEntity);
 					world.sendEntityStatus(petSlimeEntity, (byte) 7);
