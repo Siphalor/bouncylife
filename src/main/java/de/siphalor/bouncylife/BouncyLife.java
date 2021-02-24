@@ -4,6 +4,7 @@ import com.chocohead.mm.api.ClassTinkerers;
 import de.siphalor.bouncylife.enchantment.ForkPowerEnchantment;
 import de.siphalor.bouncylife.entity.PetSlimeEntity;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -31,6 +32,12 @@ public class BouncyLife implements ModInitializer {
 	public static final String MOD_ID = "bouncylife";
 	public static final float PLAYER_REACH = 5.0F;
 
+	public static EnchantmentTarget forkEnchantmentTarget;
+	public static ForkPowerEnchantment dauntlessShotEnchantment;
+	public static ForkPowerEnchantment pushBackEnchantment;
+
+	public static ItemGroup itemGroup;
+
 	public static ArmorMaterial slimeMaterial;
 
 	public static ArmorItem helmet;
@@ -47,43 +54,39 @@ public class BouncyLife implements ModInitializer {
 
 	public static EntityType<PetSlimeEntity> petSlimeEntityType;
 
-	public static EnchantmentTarget forkEnchantmentTarget;
-	public static ForkPowerEnchantment dauntlessShotEnchantment;
-	public static ForkPowerEnchantment pushBackEnchantment;
-
 	@Override
 	public void onInitialize() {
+		forkEnchantmentTarget = ClassTinkerers.getEnum(EnchantmentTarget.class, "BOUNCYLIFE_FORK");
+
+		dauntlessShotEnchantment = register(Registry.ENCHANTMENT, "dauntless_shot", new ForkPowerEnchantment(Enchantment.Rarity.UNCOMMON, 5));
+		pushBackEnchantment      = register(Registry.ENCHANTMENT, "push_back",      new ForkPowerEnchantment(Enchantment.Rarity.COMMON,   5));
+
+		itemGroup = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "main"), () -> new ItemStack(slimeFork))
+				.setEnchantments(forkEnchantmentTarget);
+
 		slimeMaterial = new SlimeMaterial();
 
-		helmet        = register(Registry.ITEM, "slime_helmet",     new ArmorItem(slimeMaterial, EquipmentSlot.HEAD,  new Item.Settings().group(ItemGroup.COMBAT)));
-		chestplate    = register(Registry.ITEM, "slime_chestplate", new ArmorItem(slimeMaterial, EquipmentSlot.CHEST, new Item.Settings().group(ItemGroup.COMBAT)));
-		leggings      = register(Registry.ITEM, "slime_leggings",   new ArmorItem(slimeMaterial, EquipmentSlot.LEGS,  new Item.Settings().group(ItemGroup.COMBAT)));
-		shoes         = register(Registry.ITEM, "slime_shoes",      new ArmorItem(slimeMaterial, EquipmentSlot.FEET,  new Item.Settings().group(ItemGroup.COMBAT)));
-		slimeFork     = register(Registry.ITEM, "slime_fork",       new SlimeForkItem(new Item.Settings().maxDamage(100).group(ItemGroup.MISC)));
-		slimeOnAStick = register(Registry.ITEM, "slime_on_a_stick", new Item(new Item.Settings().maxCount(1)));
+		helmet        = register(Registry.ITEM, "slime_helmet",     new ArmorItem(slimeMaterial, EquipmentSlot.HEAD,  new Item.Settings().group(itemGroup)));
+		chestplate    = register(Registry.ITEM, "slime_chestplate", new ArmorItem(slimeMaterial, EquipmentSlot.CHEST, new Item.Settings().group(itemGroup)));
+		leggings      = register(Registry.ITEM, "slime_leggings",   new ArmorItem(slimeMaterial, EquipmentSlot.LEGS,  new Item.Settings().group(itemGroup)));
+		shoes         = register(Registry.ITEM, "slime_shoes",      new ArmorItem(slimeMaterial, EquipmentSlot.FEET,  new Item.Settings().group(itemGroup)));
+		slimeFork     = register(Registry.ITEM, "slime_fork",       new SlimeForkItem(new Item.Settings().maxDamage(100).group(itemGroup)));
+		slimeOnAStick = register(Registry.ITEM, "slime_on_a_stick", new Item(new Item.Settings().maxCount(1).group(itemGroup)));
 		poppedSlime   = register(Registry.ITEM, "popped_slime",     new PoppedSlimeItem(
-				new Item.Settings().maxCount(1).group(ItemGroup.FOOD).food(new FoodComponent.Builder().hunger(3).saturationModifier(0.8F).build()))
+				new Item.Settings().maxCount(1).group(itemGroup).food(new FoodComponent.Builder().hunger(3).saturationModifier(0.8F).build()))
 		);
-
-		register(Registry.ITEM, "slime_helmet",     helmet);
-		register(Registry.ITEM, "slime_chestplate", chestplate);
-		register(Registry.ITEM, "slime_leggings",   leggings);
-		register(Registry.ITEM, "slime_shoes",      shoes);
-		register(Registry.ITEM, "slime_fork",       slimeFork);
-		register(Registry.ITEM, "slime_on_a_stick", slimeOnAStick);
-		register(Registry.ITEM, "popped_slime",     poppedSlime);
 
 		slimeBlocks = new Block[DyeColor.values().length];
 		for (DyeColor color : DyeColor.values()) {
 			Block block = new SlimeBlock(FabricBlockSettings.copyOf(Blocks.SLIME_BLOCK).materialColor(color.getMaterialColor()));
 			Identifier identifier = new Identifier(MOD_ID, color.getName() + "_slime_block");
 			Registry.register(Registry.BLOCK, identifier, block);
-			BlockItem item = new BlockItem(block, new Item.Settings().group(ItemGroup.DECORATIONS));
+			BlockItem item = new BlockItem(block, new Item.Settings().group(itemGroup));
 			slimeBlocks[color.getId()] = block;
 			Registry.register(Registry.ITEM, identifier, item);
 			item.appendBlocks(Item.BLOCK_ITEMS, item);
 
-			Registry.register(Registry.ITEM, new Identifier(MOD_ID, color.getName() + "_slime_ball"), new Item(new Item.Settings().group(ItemGroup.MISC)));
+			Registry.register(Registry.ITEM, new Identifier(MOD_ID, color.getName() + "_slime_ball"), new Item(new Item.Settings().group(itemGroup)));
 		}
 
 		petSlimeEntityType = register(Registry.ENTITY_TYPE, "pet_slime",
@@ -92,11 +95,6 @@ public class BouncyLife implements ModInitializer {
 						.build()
 		);
 		FabricDefaultAttributeRegistry.register(petSlimeEntityType, PetSlimeEntity.createAttributes());
-
-		forkEnchantmentTarget = ClassTinkerers.getEnum(EnchantmentTarget.class, "BOUNCYLIFE_FORK");
-
-		dauntlessShotEnchantment = register(Registry.ENCHANTMENT, "dauntless_shot", new ForkPowerEnchantment(Enchantment.Rarity.UNCOMMON, 5));
-		pushBackEnchantment      = register(Registry.ENCHANTMENT, "push_back",      new ForkPowerEnchantment(Enchantment.Rarity.COMMON,   5));
 
 		AttackEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
 			if (!world.isClient()) {

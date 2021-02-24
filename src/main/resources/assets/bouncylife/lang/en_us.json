@@ -1,4 +1,9 @@
 {
+	"itemGroup.bouncylife.main": "Bouncy Life",
+
+	"enchantment.bouncylife.dauntless_shot": "Dauntless Shot",
+	"enchantment.bouncylife.push_back": "Push Back",
+
 	"item.bouncylife.slime_fork": "Slime Fork",
 	"item.bouncylife.slime_helmet": "Slimy Helmet",
 	"item.bouncylife.slime_chestplate": "Slimy Shirt",
