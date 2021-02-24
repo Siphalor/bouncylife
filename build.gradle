@@ -36,14 +36,13 @@ dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.minecraft_version}+build.${project.yarn_mappings}"
-	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+	modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modCompile("de.siphalor:tweed-1.16:${project.tweed_version}") {
+	modImplementation(include("de.siphalor:tweed-1.16:${project.tweed_version}") {
 		exclude group: "net.fabricmc.fabric-api"
-	}
-	include "de.siphalor:tweed-1.16:${project.tweed_version}"
+	})
 
 	modCompile "de.siphalor:pushtocraft-1.16:1.0.4+"
 
