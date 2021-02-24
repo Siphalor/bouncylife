@@ -1,7 +1,6 @@
 package de.siphalor.bouncylife;
 
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.server.PlayerStream;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -12,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
@@ -44,7 +44,7 @@ public class SlimeForkItem extends Item {
 	}
 
 	@Override
-	public void onStoppedUsing(ItemStack itemStack, World world, LivingEntity livingEntity, int useTime) {
+	public void onStoppedUsing(ItemStack stack, World world, LivingEntity livingEntity, int useTime) {
 		if(!world.isClient()) {
 			Vec3d pos = livingEntity.getCameraPosVec(0.0F);
 			Vec3d ray = pos.add(livingEntity.getRotationVector().multiply(BouncyLife.PLAYER_REACH));
@@ -52,23 +52,14 @@ public class SlimeForkItem extends Item {
 			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(BouncyLife.PLAYER_REACH), entity -> true);
 			if (entityHitResult != null) {
 				Entity entity = entityHitResult.getEntity();
-				float multiplier = BLConfig.forkEntityFactor * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.POWER, itemStack);
-				Vec3d velocity = livingEntity.getRotationVector().multiply(multiplier);
-				entity.addVelocity(velocity.x, velocity.y, velocity.z);
-				Packet<?> packet = new EntityVelocityUpdateS2CPacket(entity.getEntityId(), entity.getVelocity());
-				PlayerStream.all(world.getServer()).forEach(serverPlayerEntity -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, packet));
-				playForkSound(world, null, entity.getBlockPos());
+				shootEntity(livingEntity, entity, stack, useTime, BLConfig.forkEntityFactor + EnchantmentHelper.getLevel(Enchantments.POWER, stack));
 			} else {
 				BlockHitResult blockHitResult = world.raycast(new RaycastContext(pos, ray, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, livingEntity));
 				if (blockHitResult.getType() == BlockHitResult.Type.BLOCK) {
-					float multiplier = -BLConfig.forkFactor * Math.min(20, (float) getMaxUseTime(itemStack) - (float) useTime) / 20.0F + EnchantmentHelper.getLevel(Enchantments.PUNCH, itemStack);
-					Vec3d velocity = livingEntity.getRotationVector().multiply(multiplier);
-					livingEntity.addVelocity(velocity.x, velocity.y, velocity.z);
-					Packet<?> packet = new EntityVelocityUpdateS2CPacket(livingEntity.getEntityId(), livingEntity.getVelocity());
-					PlayerStream.all(world.getServer()).forEach(serverPlayerEntity -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, packet));
-					playForkSound(world, null, livingEntity.getBlockPos());
-				} else
+					shootEntity(livingEntity, livingEntity, stack, useTime, -BLConfig.forkFactor + EnchantmentHelper.getLevel(Enchantments.PUNCH, stack));
+				} else {
 					world.playSound(null, livingEntity.getBlockPos(), SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF, SoundCategory.PLAYERS, 1.0F, 1.0F);
+				}
 			}
 		}
 	}
@@ -86,5 +77,16 @@ public class SlimeForkItem extends Item {
 	@Override
 	public int getEnchantability() {
 		return 2;
+	}
+
+	private void shootEntity(LivingEntity shooter, Entity entity, ItemStack stack, int useTime, float multiplier) {
+		multiplier *= Math.min(20F, getMaxUseTime(stack) - useTime) / 20F;
+		Vec3d velocity = shooter.getRotationVector().multiply(multiplier);
+		entity.addVelocity(velocity.x, velocity.y, velocity.z);
+		Packet<?> packet = new EntityVelocityUpdateS2CPacket(entity.getEntityId(), entity.getVelocity());
+		for (ServerPlayerEntity player : PlayerLookup.tracking(entity)) {
+			player.networkHandler.sendPacket(packet);
+		}
+		playForkSound(entity.world, null, entity.getBlockPos());
 	}
 }

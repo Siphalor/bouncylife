@@ -2,15 +2,14 @@ package de.siphalor.bouncylife;
 
 import de.siphalor.bouncylife.entity.PetSlimeEntity;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlimeBlock;
 import net.minecraft.entity.*;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.entity.mob.SlimeEntity;
@@ -66,7 +65,7 @@ public class BouncyLife implements ModInitializer {
 
 		slimeBlocks = new Block[DyeColor.values().length];
 		for (DyeColor color : DyeColor.values()) {
-			Block block = new SlimeBlock(FabricBlockSettings.copy(Blocks.SLIME_BLOCK).materialColor(color).build());
+			Block block = new SlimeBlock(FabricBlockSettings.copyOf(Blocks.SLIME_BLOCK).materialColor(color.getMaterialColor()));
 			Identifier identifier = new Identifier(MOD_ID, color.getName() + "_slime_block");
 			Registry.register(Registry.BLOCK, identifier, block);
 			BlockItem item = new BlockItem(block, new Item.Settings().group(ItemGroup.DECORATIONS));
