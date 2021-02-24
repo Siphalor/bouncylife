@@ -58,6 +58,8 @@ dependencies {
 
 processResources {
 	inputs.property "version", project.version
+	exclude "**/template"
+	exclude "**/*.py"
 
 	from(sourceSets.main.resources.srcDirs) {
 		include "fabric.mod.json"
