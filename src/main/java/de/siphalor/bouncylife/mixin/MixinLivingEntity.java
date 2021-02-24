@@ -7,7 +7,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -49,7 +49,7 @@ public abstract class MixinLivingEntity extends Entity {
 		BouncyLife.applySlimeThorns(this, damageSource, bouncylife$damageAmount, amount);
 	}
 
-	@Inject(method = "damage", at = @At("HEAD"))
+	@Inject(method = "damage", at = @At("HEAD"), cancellable = true)
 	public void damage(DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         if(!world.isClient()) {
         	if(damageSource == DamageSource.FLY_INTO_WALL) {

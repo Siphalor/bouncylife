@@ -1,20 +1,16 @@
 package de.siphalor.bouncylife;
 
-import de.siphalor.bouncylife.client.render.PetSlimeEntityRenderer;
 import de.siphalor.bouncylife.entity.PetSlimeEntity;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.block.SlimeBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.SoundManager;
 import net.minecraft.entity.*;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.entity.mob.SlimeEntity;
@@ -26,7 +22,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
 
 @SuppressWarnings("WeakerAccess")
 public class BouncyLife implements ModInitializer {
@@ -82,10 +77,11 @@ public class BouncyLife implements ModInitializer {
 			Registry.register(Registry.ITEM, new Identifier(MOD_ID, color.getName() + "_slime_ball"), new Item(new Item.Settings().group(ItemGroup.MISC)));
 		}
 
-		petSlimeEntityType = FabricEntityTypeBuilder.create(EntityCategory.CREATURE, PetSlimeEntity::new)
-				.size(EntityDimensions.changing(2.04F, 2.04F))
+		petSlimeEntityType = FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, PetSlimeEntity::new)
+				.dimensions(EntityDimensions.changing(2.04F, 2.04F))
 				.build();
 		Registry.register(Registry.ENTITY_TYPE, new Identifier(MOD_ID, "pet_slime"), petSlimeEntityType);
+		FabricDefaultAttributeRegistry.register(petSlimeEntityType, PetSlimeEntity.createAttributes());
 
 		AttackEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
 			if (!world.isClient()) {

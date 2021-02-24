@@ -26,7 +26,7 @@ public class PetSlimeEntityRenderer extends MobEntityRenderer<PetSlimeEntity, Pe
 
    @Override
    public void render(PetSlimeEntity entity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-      this.shadowSize = 0.25F * (float)entity.getSize();
+      this.shadowRadius = 0.25F * (float)entity.getSize();
       DyeColor dyeColor = entity.getColor();
       if (dyeColor == null) {
          model.setColorMultiplier(1F, 1F, 1F);

@@ -20,9 +20,6 @@
 		"client": [
 			"de.siphalor.bouncylife.client.BouncyLifeClient"
 		],
-		"modmenu": [
-			"de.siphalor.bouncylife.client.ModMenuEntryPoint"
-		],
 		"tweed:config": [
 			"de.siphalor.bouncylife.BLConfig"
 		]
