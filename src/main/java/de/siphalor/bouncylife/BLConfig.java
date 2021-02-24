@@ -45,6 +45,9 @@ public class BLConfig {
 				@AConfigConstraint(value = RangeConstraint.class, param = "0..")
 		})
 		public float yBounceTolerance = 0.7F;
+
+		@AConfigEntry(comment = "Wearing slime armor implicitly works like the Thorns enchantment")
+		public boolean slimeArmorThorns = true;
 	}
 
 	@AConfigFixer

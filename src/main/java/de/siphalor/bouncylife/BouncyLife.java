@@ -144,6 +144,9 @@ public class BouncyLife implements ModInitializer {
 	}
 
 	public static void applySlimeThorns(Entity attackedEntity, DamageSource damageSource, float baseDamage, float resultedDamage) {
+		if (!BLConfig.bounce.slimeArmorThorns) {
+			return;
+		}
 		if(damageSource instanceof EntityDamageSource && damageSource.getAttacker() != null) {
             float slimeAmount = 0.0F;
             for(ItemStack stack : attackedEntity.getArmorItems()) {
