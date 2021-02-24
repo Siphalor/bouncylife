@@ -2,7 +2,6 @@ package de.siphalor.bouncylife;
 
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,11 +51,11 @@ public class SlimeForkItem extends Item {
 			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(BouncyLife.PLAYER_REACH), entity -> true);
 			if (entityHitResult != null) {
 				Entity entity = entityHitResult.getEntity();
-				shootEntity(livingEntity, entity, stack, useTime, BLConfig.forkEntityFactor + EnchantmentHelper.getLevel(BouncyLife.pushBackEnchantment, stack));
+				shootEntity(livingEntity, entity, stack, useTime, BLConfig.bounce.otherShootPower + EnchantmentHelper.getLevel(BouncyLife.pushBackEnchantment, stack));
 			} else {
 				BlockHitResult blockHitResult = world.raycast(new RaycastContext(pos, ray, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, livingEntity));
 				if (blockHitResult.getType() == BlockHitResult.Type.BLOCK) {
-					shootEntity(livingEntity, livingEntity, stack, useTime, -BLConfig.forkFactor - EnchantmentHelper.getLevel(BouncyLife.dauntlessShotEnchantment, stack));
+					shootEntity(livingEntity, livingEntity, stack, useTime, -BLConfig.bounce.selfShootPower - EnchantmentHelper.getLevel(BouncyLife.dauntlessShotEnchantment, stack));
 				} else {
 					world.playSound(null, livingEntity.getBlockPos(), SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF, SoundCategory.PLAYERS, 1.0F, 1.0F);
 				}

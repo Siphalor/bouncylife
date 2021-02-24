@@ -47,10 +47,10 @@
 	"item.bouncylife.black_slime_ball": "Black Slime Ball",
 
 	"tweed.cloth.bouncylife": "Bouncy Life Config",
-	"tweed.cloth.bouncylife.main": "General",
-	"tweed.cloth.bouncylife.main.fork-power-factor": "Fork Power Factor",
-	"tweed.cloth.bouncylife.main.fork-entity-power-factor": "Fork Entity Power Factor",
-	"tweed.cloth.bouncylife.main.velocity-dampener": "Velocity Dampener",
-	"tweed.cloth.bouncylife.main.sneak-velocity-dampener": "Sneak Velocity Dampener",
-	"tweed.cloth.bouncylife.main.y-bounce-tolerance": "Y Velocity Tolerance"
+	"tweed.cloth.bouncylife.bounce": "General",
+	"tweed.cloth.bouncylife.bounce.self-shoot-power": "Self Shoot Power",
+	"tweed.cloth.bouncylife.bounce.other-shoot-power": "Other Entity Shoot Power",
+	"tweed.cloth.bouncylife.bounce.velocity-dampener": "Velocity Dampener",
+	"tweed.cloth.bouncylife.bounce.sneak-velocity-dampener": "Sneak Velocity Dampener",
+	"tweed.cloth.bouncylife.bounce.y-bounce-tolerance": "Y Velocity Tolerance"
 }

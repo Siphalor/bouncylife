@@ -19,10 +19,10 @@ public class MixinBlock {
 	@SuppressWarnings("WeakerAccess")
 	@Inject(method = "onEntityLand", at = @At("HEAD"), cancellable = true)
 	public void onEntityLand(BlockView blockView, Entity entity, CallbackInfo callbackInfo) {
-		if(entity instanceof LivingEntity && Math.abs(entity.getVelocity().getY()) > BLConfig.yBounceTolerance) {
+		if(entity instanceof LivingEntity && Math.abs(entity.getVelocity().getY()) > BLConfig.bounce.yBounceTolerance) {
             for(ItemStack stack : entity.getArmorItems()) {
             	if(stack.getItem() == BouncyLife.shoes) {
-            		entity.setVelocity(entity.getVelocity().multiply(1.0F, entity.isSneaking() ? -BLConfig.sneakVelocityDampener : -BLConfig.velocityDampener, 1.0F));
+            		entity.setVelocity(entity.getVelocity().multiply(1.0F, entity.isSneaking() ? -BLConfig.bounce.sneakVelocityDampener : -BLConfig.bounce.velocityDampener, 1.0F));
             		entity.world.playSound(null, entity.getBlockPos(), SoundEvents.BLOCK_SLIME_BLOCK_FALL, SoundCategory.PLAYERS, 1.0F, 0.5F);
             		callbackInfo.cancel();
             		return;
