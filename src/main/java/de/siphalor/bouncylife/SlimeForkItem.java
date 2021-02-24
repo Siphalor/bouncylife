@@ -87,6 +87,9 @@ public class SlimeForkItem extends Item {
 		for (ServerPlayerEntity player : PlayerLookup.tracking(entity)) {
 			player.networkHandler.sendPacket(packet);
 		}
+		if (entity instanceof ServerPlayerEntity) {
+			((ServerPlayerEntity) entity).networkHandler.sendPacket(packet);
+		}
 		playForkSound(entity.world, null, entity.getBlockPos());
 	}
 }
