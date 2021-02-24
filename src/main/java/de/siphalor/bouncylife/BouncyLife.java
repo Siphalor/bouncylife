@@ -1,5 +1,7 @@
 package de.siphalor.bouncylife;
 
+import com.chocohead.mm.api.ClassTinkerers;
+import de.siphalor.bouncylife.enchantment.ForkPowerEnchantment;
 import de.siphalor.bouncylife.entity.PetSlimeEntity;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -9,6 +11,8 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlimeBlock;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.EntityDamageSource;
@@ -42,6 +46,10 @@ public class BouncyLife implements ModInitializer {
 	public static Block[] slimeBlocks;
 
 	public static EntityType<PetSlimeEntity> petSlimeEntityType;
+
+	public static EnchantmentTarget forkEnchantmentTarget;
+	public static ForkPowerEnchantment dauntlessShotEnchantment;
+	public static ForkPowerEnchantment pushBackEnchantment;
 
 	@Override
 	public void onInitialize() {
@@ -82,6 +90,10 @@ public class BouncyLife implements ModInitializer {
 		Registry.register(Registry.ENTITY_TYPE, new Identifier(MOD_ID, "pet_slime"), petSlimeEntityType);
 		FabricDefaultAttributeRegistry.register(petSlimeEntityType, PetSlimeEntity.createAttributes());
 
+		forkEnchantmentTarget = ClassTinkerers.getEnum(EnchantmentTarget.class, "BOUNCYLIFE_FORK");
+		dauntlessShotEnchantment = register(Registry.ENCHANTMENT, "dauntless_shot", new ForkPowerEnchantment(Enchantment.Rarity.UNCOMMON, 5));
+		pushBackEnchantment      = register(Registry.ENCHANTMENT, "push_back",      new ForkPowerEnchantment(Enchantment.Rarity.COMMON,   5));
+
 		AttackEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
 			if (!world.isClient()) {
 				if (
@@ -101,6 +113,10 @@ public class BouncyLife implements ModInitializer {
 			}
 			return ActionResult.PASS;
 		});
+	}
+
+	private static <T, S extends T> S register(Registry<T> registry, String id, S val) {
+		return Registry.register(registry, new Identifier(MOD_ID, id), val);
 	}
 
 	public static boolean isSlimeArmor(ItemStack stack) {

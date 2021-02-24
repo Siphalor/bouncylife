@@ -22,6 +22,9 @@
 		],
 		"tweed:config": [
 			"de.siphalor.bouncylife.BLConfig"
+		],
+		"mm:early_risers": [
+			"de.siphalor.bouncylife.BLEarlyRiser"
 		]
 	},
 	"mixins": [
