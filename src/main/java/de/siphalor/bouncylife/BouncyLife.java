@@ -55,21 +55,23 @@ public class BouncyLife implements ModInitializer {
 	public void onInitialize() {
 		slimeMaterial = new SlimeMaterial();
 
-		helmet = new ArmorItem(slimeMaterial, EquipmentSlot.HEAD, new Item.Settings().group(ItemGroup.COMBAT));
-		chestplate = new ArmorItem(slimeMaterial, EquipmentSlot.CHEST, new Item.Settings().group(ItemGroup.COMBAT));
-		leggings = new ArmorItem(slimeMaterial, EquipmentSlot.LEGS, new Item.Settings().group(ItemGroup.COMBAT));
-		shoes = new ArmorItem(slimeMaterial, EquipmentSlot.FEET, new Item.Settings().group(ItemGroup.COMBAT));
-		slimeFork = new SlimeForkItem(new Item.Settings().maxDamage(100).group(ItemGroup.MISC));
-		slimeOnAStick = new Item(new Item.Settings().maxCount(1));
-		poppedSlime = new PoppedSlimeItem(new Item.Settings().maxCount(1).group(ItemGroup.FOOD).food(new FoodComponent.Builder().hunger(3).saturationModifier(0.8F).build()));
+		helmet        = register(Registry.ITEM, "slime_helmet",     new ArmorItem(slimeMaterial, EquipmentSlot.HEAD,  new Item.Settings().group(ItemGroup.COMBAT)));
+		chestplate    = register(Registry.ITEM, "slime_chestplate", new ArmorItem(slimeMaterial, EquipmentSlot.CHEST, new Item.Settings().group(ItemGroup.COMBAT)));
+		leggings      = register(Registry.ITEM, "slime_leggings",   new ArmorItem(slimeMaterial, EquipmentSlot.LEGS,  new Item.Settings().group(ItemGroup.COMBAT)));
+		shoes         = register(Registry.ITEM, "slime_shoes",      new ArmorItem(slimeMaterial, EquipmentSlot.FEET,  new Item.Settings().group(ItemGroup.COMBAT)));
+		slimeFork     = register(Registry.ITEM, "slime_fork",       new SlimeForkItem(new Item.Settings().maxDamage(100).group(ItemGroup.MISC)));
+		slimeOnAStick = register(Registry.ITEM, "slime_on_a_stick", new Item(new Item.Settings().maxCount(1)));
+		poppedSlime   = register(Registry.ITEM, "popped_slime",     new PoppedSlimeItem(
+				new Item.Settings().maxCount(1).group(ItemGroup.FOOD).food(new FoodComponent.Builder().hunger(3).saturationModifier(0.8F).build()))
+		);
 
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_helmet"), helmet);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_chestplate"), chestplate);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_leggings"), leggings);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_shoes"), shoes);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_fork"), slimeFork);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "slime_on_a_stick"), slimeOnAStick);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "popped_slime"), poppedSlime);
+		register(Registry.ITEM, "slime_helmet",     helmet);
+		register(Registry.ITEM, "slime_chestplate", chestplate);
+		register(Registry.ITEM, "slime_leggings",   leggings);
+		register(Registry.ITEM, "slime_shoes",      shoes);
+		register(Registry.ITEM, "slime_fork",       slimeFork);
+		register(Registry.ITEM, "slime_on_a_stick", slimeOnAStick);
+		register(Registry.ITEM, "popped_slime",     poppedSlime);
 
 		slimeBlocks = new Block[DyeColor.values().length];
 		for (DyeColor color : DyeColor.values()) {
@@ -84,13 +86,15 @@ public class BouncyLife implements ModInitializer {
 			Registry.register(Registry.ITEM, new Identifier(MOD_ID, color.getName() + "_slime_ball"), new Item(new Item.Settings().group(ItemGroup.MISC)));
 		}
 
-		petSlimeEntityType = FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, PetSlimeEntity::new)
-				.dimensions(EntityDimensions.changing(2.04F, 2.04F))
-				.build();
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(MOD_ID, "pet_slime"), petSlimeEntityType);
+		petSlimeEntityType = register(Registry.ENTITY_TYPE, "pet_slime",
+				FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, PetSlimeEntity::new)
+						.dimensions(EntityDimensions.changing(2.04F, 2.04F))
+						.build()
+		);
 		FabricDefaultAttributeRegistry.register(petSlimeEntityType, PetSlimeEntity.createAttributes());
 
 		forkEnchantmentTarget = ClassTinkerers.getEnum(EnchantmentTarget.class, "BOUNCYLIFE_FORK");
+
 		dauntlessShotEnchantment = register(Registry.ENCHANTMENT, "dauntless_shot", new ForkPowerEnchantment(Enchantment.Rarity.UNCOMMON, 5));
 		pushBackEnchantment      = register(Registry.ENCHANTMENT, "push_back",      new ForkPowerEnchantment(Enchantment.Rarity.COMMON,   5));
 
