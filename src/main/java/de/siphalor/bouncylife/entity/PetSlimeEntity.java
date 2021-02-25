@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
@@ -44,12 +45,17 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Objects;
 
 public class PetSlimeEntity extends TameableEntity {
 	private static final TrackedData<Integer> SLIME_SIZE;
 	private static final TrackedData<Integer> COLOR;
 	private static final TrackedData<Boolean> SADDLED;
+
+	private static final ParticleEffect[] PARTICLE_EFFECTS;
+
 	private static final Ingredient TEMPT_INGREDIENT = Ingredient.ofItems(Items.HONEY_BOTTLE, Items.ROTTEN_FLESH);
 
 	private static final Identifier PLAIN_LOOT_TABLE = new Identifier(BouncyLife.MOD_ID, "entities/pet_slime/plain");
@@ -81,7 +87,7 @@ public class PetSlimeEntity extends TameableEntity {
 	protected void initGoals() {
 		this.goalSelector.add(1, new SwimmingGoal(this));
 		this.goalSelector.add(2, new FaceTowardTargetGoal(this));
-		this.goalSelector.add(3, new FollowOwnerGoal(this, 1D, 10F, 2F, false));
+		this.goalSelector.add(3, new FollowOwnerGoal(this, 1D, 5F, 11.9F, false));
 		this.goalSelector.add(4, new TemptGoal(this, 1D, TEMPT_INGREDIENT, false));
 		this.goalSelector.add(5, new MoveGoal(this));
 		this.goalSelector.add(5, new RandomLookGoal(this));
@@ -170,7 +176,11 @@ public class PetSlimeEntity extends TameableEntity {
 	}
 
 	protected ParticleEffect getParticles() {
-		return ParticleTypes.ITEM_SLIME;
+		int color = dataTracker.get(COLOR);
+		if (color == -1) {
+			return ParticleTypes.ITEM_SLIME;
+		}
+		return PARTICLE_EFFECTS[color];
 	}
 
 	public void tick() {
@@ -200,11 +210,37 @@ public class PetSlimeEntity extends TameableEntity {
 
 	@Override
 	public void travel(Vec3d movementInput) {
-		if (hasPassengers()) {
-			((SlimeMoveControl) moveControl).look(getPassengerList().get(0).yaw, true);
-			((SlimeMoveControl) moveControl).move(1D);
+		if (isAlive()) {
+			if (hasPassengers()) {
+				Entity rider = getPrimaryPassenger();
+				yaw = rider.yaw;
+				prevYaw = rider.yaw;
+				pitch = rider.pitch;
+				setRotation(yaw, pitch);
+				bodyYaw = rider.yaw;
+				headYaw = rider.yaw;
+			}
 			super.travel(movementInput);
 		}
+	}
+
+	@Override
+	public void move(MovementType type, Vec3d movement) {
+		if (type == MovementType.PLAYER) { // This is required because the client otherwise forces weird things
+			return;
+		}
+		super.move(type, movement);
+	}
+
+	@Nullable
+	@Override
+	public Entity getPrimaryPassenger() {
+		return getPassengerList().isEmpty() ? null : getPassengerList().get(0);
+	}
+
+	@Override
+	public double getMountedHeightOffset() {
+		return super.getMountedHeightOffset() * 1.2D;
 	}
 
 	protected void updateStretch() {
@@ -212,6 +248,9 @@ public class PetSlimeEntity extends TameableEntity {
 	}
 
 	protected int getTicksUntilNextJump() {
+		if (hasPassengers()) {
+			return 15;
+		}
 		return this.random.nextInt(20) + 10;
 	}
 
@@ -348,7 +387,7 @@ public class PetSlimeEntity extends TameableEntity {
 					return ActionResult.CONSUME;
 				}
 			}
-			if (isSaddled() && !hasPassengers() && isOwner(player)) {
+			if (isSaddled() && !hasPassengers()) {
 				if (!world.isClient()) {
 					player.yaw = yaw;
 					player.pitch = pitch;
@@ -479,6 +518,12 @@ public class PetSlimeEntity extends TameableEntity {
 		SLIME_SIZE = DataTracker.registerData(PetSlimeEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		COLOR = DataTracker.registerData(PetSlimeEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		SADDLED = DataTracker.registerData(PetSlimeEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+
+		PARTICLE_EFFECTS = Arrays.stream(DyeColor.values())
+				.map(DyeItem::byColor)
+				.filter(Objects::nonNull)
+				.map(item -> new ItemStackParticleEffect(ParticleTypes.ITEM, new ItemStack(item)))
+				.toArray(ParticleEffect[]::new);
 	}
 
 	static class MoveGoal extends Goal {
@@ -618,9 +663,15 @@ public class PetSlimeEntity extends TameableEntity {
 				this.entity.setForwardSpeed(0.0F);
 			} else {
 				this.state = State.WAIT;
+				this.entity.setMovementSpeed((float)(this.speed * this.entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).getValue()));
 				if (this.entity.isOnGround()) {
-					this.entity.setMovementSpeed((float)(this.speed * this.entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).getValue()));
-					if (this.ticksUntilJump-- <= 0) {
+					boolean shallMove = true;
+					Entity rider = slime.getPrimaryPassenger();
+					if (rider instanceof LivingEntity) {
+						shallMove = ((LivingEntity) rider).forwardSpeed > 0.001;
+						jumpOften = rider.isSprinting();
+					}
+					if (this.ticksUntilJump-- <= 0 && shallMove) {
 						this.ticksUntilJump = this.slime.getTicksUntilNextJump();
 						if (this.jumpOften) {
 							this.ticksUntilJump /= 3;
@@ -635,10 +686,7 @@ public class PetSlimeEntity extends TameableEntity {
 						this.slime.forwardSpeed = 0.0F;
 						this.entity.setMovementSpeed(0.0F);
 					}
-				} else {
-					this.entity.setMovementSpeed((float)(this.speed * this.entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).getValue()));
 				}
-
 			}
 		}
 	}
