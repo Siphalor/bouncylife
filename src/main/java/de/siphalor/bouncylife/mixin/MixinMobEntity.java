@@ -30,6 +30,7 @@ public abstract class MixinMobEntity extends LivingEntity {
 			cancellable = true
 	)
 	public void onInteract(PlayerEntity playerEntity, Hand hand, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+		if (world.isClient) return;
 		if (getClass().equals(SlimeEntity.class)) {
 			ItemStack stack = playerEntity.getStackInHand(hand);
 			Item item = stack.getItem();
