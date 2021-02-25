@@ -46,6 +46,10 @@
 	"block.bouncylife.black_slime_block": "Black Slime Block",
 	"item.bouncylife.black_slime_ball": "Black Slime Ball",
 
+	"subtitles.bouncylife.slime_fork.shoot": "Slime Fork shoots",
+	"subtitles.bouncylife.slime_fork.snap": "Slime Fork snaps",
+	"subtitles.bouncylife.slime_fork.stretch": "Slime Fork stretches",
+
 	"tweed.cloth.bouncylife": "Bouncy Life Config",
 	"tweed.cloth.bouncylife.bounce": "General",
 	"tweed.cloth.bouncylife.bounce.self-shoot-power": "Self Shoot Power",

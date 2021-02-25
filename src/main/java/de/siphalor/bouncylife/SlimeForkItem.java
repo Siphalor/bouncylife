@@ -29,16 +29,10 @@ public class SlimeForkItem extends Item {
 		super(settings);
 	}
 
-	@SuppressWarnings("WeakerAccess")
-	public static void playForkSound(World world, PlayerEntity player, BlockPos blockPos) {
-		world.playSound(player, blockPos, SoundEvents.BLOCK_SLIME_BLOCK_PLACE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-		world.playSound(player, blockPos, SoundEvents.ITEM_CROSSBOW_LOADING_END, SoundCategory.PLAYERS, 1.0F, 1.0F);
-	}
-
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		player.setCurrentHand(hand);
-		world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_CROSSBOW_LOADING_MIDDLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+		world.playSoundFromEntity(player, player, BouncyLife.soundForkStretch, SoundCategory.PLAYERS, 1F, 1F);
 		return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
 	}
 
@@ -57,7 +51,7 @@ public class SlimeForkItem extends Item {
 				if (blockHitResult.getType() == BlockHitResult.Type.BLOCK) {
 					shootEntity(livingEntity, livingEntity, stack, useTime, -BLConfig.bounce.selfShootPower - EnchantmentHelper.getLevel(BouncyLife.dauntlessShotEnchantment, stack));
 				} else {
-					world.playSound(null, livingEntity.getBlockPos(), SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF, SoundCategory.PLAYERS, 1.0F, 1.0F);
+					world.playSoundFromEntity(null, livingEntity, BouncyLife.soundForkSnap, SoundCategory.PLAYERS, 1F, 1F);
 				}
 			}
 		}
@@ -89,6 +83,6 @@ public class SlimeForkItem extends Item {
 		if (entity instanceof ServerPlayerEntity) {
 			((ServerPlayerEntity) entity).networkHandler.sendPacket(packet);
 		}
-		playForkSound(entity.world, null, entity.getBlockPos());
+		shooter.world.playSoundFromEntity(null, shooter, BouncyLife.soundForkShoot, SoundCategory.PLAYERS, 1F, 1F);
 	}
 }

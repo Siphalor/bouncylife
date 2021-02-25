@@ -21,6 +21,7 @@ import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
@@ -53,6 +54,10 @@ public class BouncyLife implements ModInitializer {
 	public static Block[] slimeBlocks;
 
 	public static EntityType<PetSlimeEntity> petSlimeEntityType;
+
+	public static SoundEvent soundForkShoot;
+	public static SoundEvent soundForkSnap;
+	public static SoundEvent soundForkStretch;
 
 	@Override
 	public void onInitialize() {
@@ -96,6 +101,10 @@ public class BouncyLife implements ModInitializer {
 		);
 		FabricDefaultAttributeRegistry.register(petSlimeEntityType, PetSlimeEntity.createAttributes());
 
+		soundForkShoot   = registerSound("slime_fork.shoot");
+		soundForkSnap    = registerSound("slime_fork.snap");
+		soundForkStretch = registerSound("slime_fork.stretch");
+
 		AttackEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
 			if (!world.isClient()) {
 				if (
@@ -119,6 +128,11 @@ public class BouncyLife implements ModInitializer {
 
 	private static <T, S extends T> S register(Registry<T> registry, String id, S val) {
 		return Registry.register(registry, new Identifier(MOD_ID, id), val);
+	}
+
+	private static SoundEvent registerSound(String id) {
+		Identifier identifier = new Identifier(MOD_ID, id);
+		return Registry.register(Registry.SOUND_EVENT, identifier, new SoundEvent(identifier));
 	}
 
 	public static boolean isSlimeArmor(ItemStack stack) {

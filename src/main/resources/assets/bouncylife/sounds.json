@@ -1,0 +1,20 @@
+{
+	"slime_fork.stretch": {
+		"subtitle": "subtitles.bouncylife.slime_fork.stretch",
+		"sounds": [
+			"bouncylife:fork_stretch"
+		]
+	},
+	"slime_fork.shoot": {
+		"subtitle": "subtitles.bouncylife.slime_fork.shoot",
+		"sounds": [
+			"bouncylife:fork_shoot"
+		]
+	},
+	"slime_fork.snap": {
+		"subtitle": "subtitles.bouncylife.slime_fork.snap",
+		"sounds": [
+			"bouncylife:fork_snap"
+		]
+	}
+}
