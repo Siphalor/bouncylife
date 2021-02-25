@@ -86,12 +86,12 @@ public class PetSlimeEntity extends TameableEntity {
 
 	protected void initGoals() {
 		this.goalSelector.add(1, new SwimmingGoal(this));
-		this.goalSelector.add(2, new FaceTowardTargetGoal(this));
-		this.goalSelector.add(3, new FollowOwnerGoal(this, 1D, 5F, 11.9F, false));
-		this.goalSelector.add(4, new TemptGoal(this, 1D, TEMPT_INGREDIENT, false));
-		this.goalSelector.add(5, new MoveGoal(this));
-		this.goalSelector.add(5, new RandomLookGoal(this));
-		this.goalSelector.add(10, new CombineWithMateGoal(this, 1F));
+		this.goalSelector.add(2, new CombineWithMateGoal(this, 1F));
+		this.goalSelector.add(3, new TemptGoal(this, 1D, TEMPT_INGREDIENT, false));
+		this.goalSelector.add(4, new FaceTowardTargetGoal(this));
+		this.goalSelector.add(5, new FollowOwnerNoTeleportGoal(this, 1D, 8F, 20F));
+		this.goalSelector.add(6, new MoveGoal(this));
+		this.goalSelector.add(6, new RandomLookGoal(this));
 		this.targetSelector.add(1, new TrackOwnerAttackerGoal(this));
 		this.targetSelector.add(2, new AttackWithOwnerGoal(this));
 		this.targetSelector.add(3, (new RevengeGoal(this)).setGroupRevenge());
@@ -349,6 +349,13 @@ public class PetSlimeEntity extends TameableEntity {
 	public ActionResult interactMob(PlayerEntity player, Hand hand) {
 		if (isOwner(player)) {
 			ItemStack stack = player.getStackInHand(hand);
+			if (canEat() && isBreedingItem(stack)) {
+				eat(player, stack);
+				if (!world.isClient) {
+					lovePlayer(player);
+				}
+				return ActionResult.success(world.isClient);
+			}
 			if (TEMPT_INGREDIENT.test(stack) && isOwner(player)) {
 				if (!world.isClient()) {
 					eat(player, stack);
@@ -365,7 +372,7 @@ public class PetSlimeEntity extends TameableEntity {
 						world.sendEntityStatus(this, (byte) 8);
 					}
 				}
-				return ActionResult.CONSUME;
+				return ActionResult.success(world.isClient);
 			} else if (stack.getItem() instanceof DyeItem) {
 				DyeColor nextColor = ((DyeItem) stack.getItem()).getColor();
 				if (nextColor != getColor()) {
@@ -374,7 +381,7 @@ public class PetSlimeEntity extends TameableEntity {
 					}
 					if (!player.isCreative())
 						stack.decrement(1);
-					return ActionResult.CONSUME;
+					return ActionResult.success(world.isClient);
 				}
 			} else if (stack.getItem() == Items.SADDLE) {
 				if (!isSaddled() && getSize() >= 2) {
@@ -384,7 +391,7 @@ public class PetSlimeEntity extends TameableEntity {
 					world.playSound(player, getX(), getY(), getZ(), SoundEvents.ENTITY_PIG_SADDLE, SoundCategory.NEUTRAL, 0.5F, 1F);
 					if (!player.isCreative())
 						stack.decrement(1);
-					return ActionResult.CONSUME;
+					return ActionResult.success(world.isClient);
 				}
 			}
 			if (isSaddled() && !hasPassengers()) {
@@ -393,7 +400,7 @@ public class PetSlimeEntity extends TameableEntity {
 					player.pitch = pitch;
 					player.startRiding(this);
 				}
-				return ActionResult.SUCCESS;
+				return ActionResult.success(world.isClient);
 			}
 		}
 		return super.interactMob(player, hand);
@@ -465,7 +472,7 @@ public class PetSlimeEntity extends TameableEntity {
 	protected void eat(PlayerEntity player, ItemStack stack) {
 		boolean honeyBottle = stack.getItem() == Items.HONEY_BOTTLE;
 		super.eat(player, stack);
-		if (honeyBottle) {
+		if (honeyBottle && !player.abilities.creativeMode) {
 			player.giveItemStack(new ItemStack(Items.GLASS_BOTTLE));
 		}
 	}
@@ -699,7 +706,7 @@ public class PetSlimeEntity extends TameableEntity {
 		@Override
 		protected void breed() {
 			if (animal instanceof PetSlimeEntity) {
-				((PetSlimeEntity) animal).setSize(((PetSlimeEntity) animal).getSize(), false);
+				((PetSlimeEntity) animal).setSize(((PetSlimeEntity) animal).getSize() + 1, false);
 				mate.removed = true;
 			}
 		}
