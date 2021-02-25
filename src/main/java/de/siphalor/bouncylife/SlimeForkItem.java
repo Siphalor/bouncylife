@@ -40,17 +40,22 @@ public class SlimeForkItem extends Item {
 			Vec3d pos = livingEntity.getCameraPosVec(0.0F);
 			Vec3d ray = pos.add(livingEntity.getRotationVector().multiply(BouncyLife.PLAYER_REACH));
 
+			Entity target = livingEntity;
 			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(BouncyLife.PLAYER_REACH), entity -> true);
 			if (entityHitResult != null) {
 				Entity entity = entityHitResult.getEntity();
-				shootEntity(livingEntity, entity, stack, useTime, BLConfig.bounce.otherShootPower + EnchantmentHelper.getLevel(BouncyLife.pushBackEnchantment, stack));
-			} else {
-				BlockHitResult blockHitResult = world.raycast(new RaycastContext(pos, ray, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, livingEntity));
-				if (blockHitResult.getType() == BlockHitResult.Type.BLOCK) {
-					shootEntity(livingEntity, livingEntity, stack, useTime, -BLConfig.bounce.selfShootPower - EnchantmentHelper.getLevel(BouncyLife.dauntlessShotEnchantment, stack));
+				if (entity.hasPassengerDeep(livingEntity)) {
+					target = entity.getRootVehicle();
 				} else {
-					world.playSoundFromEntity(null, livingEntity, BouncyLife.soundForkSnap, SoundCategory.PLAYERS, 1F, 1F);
+					shootEntity(livingEntity, entity, stack, useTime, BLConfig.bounce.otherShootPower + EnchantmentHelper.getLevel(BouncyLife.pushBackEnchantment, stack));
+					return;
 				}
+			}
+			BlockHitResult blockHitResult = world.raycast(new RaycastContext(pos, ray, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, livingEntity));
+			if (blockHitResult.getType() == BlockHitResult.Type.BLOCK) {
+				shootEntity(livingEntity, target, stack, useTime, -BLConfig.bounce.selfShootPower - EnchantmentHelper.getLevel(BouncyLife.dauntlessShotEnchantment, stack));
+			} else {
+				world.playSoundFromEntity(null, livingEntity, BouncyLife.soundForkSnap, SoundCategory.PLAYERS, 1F, 1F);
 			}
 		}
 	}
