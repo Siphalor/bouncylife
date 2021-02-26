@@ -62,13 +62,17 @@ public class BLConfig {
 		@AConfigEntry(comment = "Enable amassing slimes by feeding them rotten flesh.")
 		public boolean enableRottenFleshAmassing = true;
 
-		@AConfigEntry(comment = "The maximum size of a pet slime that can be reached with the amassing mechanic.")
+		@AConfigEntry(comment = "The maximum size of a pet slime that can be reached with the amassing mechanic.",
+				constraints = @AConfigConstraint(value = RangeConstraint.class, param = "0..")
+		)
 		public int amassSizeLimit = 5;
 
 		@AConfigEntry(comment = "Enable breeding of pet slimes.\nPet slimes will not normally breed but combine each other to a bigger pet slime,\nif they have the same size.")
 		public boolean enableBreeding = true;
 
-		@AConfigEntry(comment = "The maximum size of a pet slime that can be reached through the breeding mechanic.")
+		@AConfigEntry(comment = "The maximum size of a pet slime that can be reached through the breeding mechanic.",
+				constraints = @AConfigConstraint(value = RangeConstraint.class, param = "0..")
+		)
 		public int breedSizeLimit = 10;
 
 		@AConfigEntry(comment = "Limits the maximum health of pet slimes.\nSince the maximum health is calculate as the square of the size,\n" +
