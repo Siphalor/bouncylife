@@ -17,6 +17,7 @@
 package de.siphalor.bouncylife.entity;
 
 import de.siphalor.bouncylife.BLConfig;
+import de.siphalor.bouncylife.BLUtil;
 import de.siphalor.bouncylife.BouncyLife;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -745,7 +746,14 @@ public class PetSlimeEntity extends TameableEntity {
 		@Override
 		protected void breed() {
 			if (animal instanceof PetSlimeEntity) {
-				((PetSlimeEntity) animal).setSize(((PetSlimeEntity) animal).getSize() + 1, false);
+				PetSlimeEntity self = (PetSlimeEntity) this.animal;
+				PetSlimeEntity mate = (PetSlimeEntity) this.mate;
+				self.setSize(self.getSize() + 1, false);
+				self.setColor(BLUtil.mixColors(self.getColor(), mate.getColor(), self.world));
+				if (mate.hasCustomName()) {
+					self.setCustomName(mate.getCustomName());
+				}
+				self.setPersistent();
 				mate.removed = true;
 			}
 		}
