@@ -50,6 +50,28 @@ public class BLConfig {
 		public boolean slimeArmorThorns = true;
 	}
 
+	@AConfigEntry(comment = "Configs related to petting slimes",
+			environment = ConfigEnvironment.SYNCED
+	)
+	public static Pet pet;
+
+	public static class Pet {
+		@AConfigEntry(comment = "Enable amassing slimes by feeding them honey.")
+		public boolean enableHoneyAmassing = true;
+
+		@AConfigEntry(comment = "Enable amassing slimes by feeding them rotten flesh.")
+		public boolean enableRottenFleshAmassing = true;
+
+		@AConfigEntry(comment = "The maximum size of a pet slime that can be reached with the amassing mechanic.")
+		public int amassSizeLimit = 5;
+
+		@AConfigEntry(comment = "Enable breeding of pet slimes.\nPet slimes will not normally breed but combine each other to a bigger pet slime,\nif they have the same size.")
+		public boolean enableBreeding = true;
+
+		@AConfigEntry(comment = "The maximum size of a pet slime that can be reached through the breeding mechanic.")
+		public int breedSizeLimit = 10;
+	}
+
 	@AConfigFixer
 	public static <T> void fixMainConfig(DataObject<T> main, DataObject<T> main_) {
 		// Detect the old config where there were no categories

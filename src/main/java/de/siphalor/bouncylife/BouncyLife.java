@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.fabricmc.fabric.api.tag.FabricTagBuilder;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlimeBlock;
@@ -23,6 +25,7 @@ import net.minecraft.item.*;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -32,6 +35,8 @@ import net.minecraft.util.registry.Registry;
 public class BouncyLife implements ModInitializer {
 	public static final String MOD_ID = "bouncylife";
 	public static final float PLAYER_REACH = 5.0F;
+
+	public static Tag<Item> honeyTag;
 
 	public static EnchantmentTarget forkEnchantmentTarget;
 	public static ForkPowerEnchantment dauntlessShotEnchantment;
@@ -61,6 +66,8 @@ public class BouncyLife implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		honeyTag = TagRegistry.item(new Identifier(MOD_ID, "honey"));
+
 		forkEnchantmentTarget = ClassTinkerers.getEnum(EnchantmentTarget.class, "BOUNCYLIFE_FORK");
 
 		dauntlessShotEnchantment = register(Registry.ENCHANTMENT, "dauntless_shot", new ForkPowerEnchantment(Enchantment.Rarity.UNCOMMON, 5));

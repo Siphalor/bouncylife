@@ -1,5 +1,6 @@
 package de.siphalor.bouncylife.entity;
 
+import de.siphalor.bouncylife.BLConfig;
 import de.siphalor.bouncylife.BouncyLife;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -349,58 +350,76 @@ public class PetSlimeEntity extends TameableEntity {
 	public ActionResult interactMob(PlayerEntity player, Hand hand) {
 		if (isOwner(player)) {
 			ItemStack stack = player.getStackInHand(hand);
-			if (canEat() && isBreedingItem(stack)) {
+			if (canEat() && isBreedingItem(stack) && getSize() < BLConfig.pet.breedSizeLimit) {
 				eat(player, stack);
 				if (!world.isClient) {
 					lovePlayer(player);
 				}
 				return ActionResult.success(world.isClient);
 			}
-			if (TEMPT_INGREDIENT.test(stack) && isOwner(player)) {
-				if (!world.isClient()) {
+			if (getHealth() < getMaxHealth()) {
+				if (TEMPT_INGREDIENT.test(stack)) {
 					eat(player, stack);
-
-					growthRandBound = Math.max(0, growthRandBound);
-
-					if (getHealth() < getMaxHealth()) {
+					if (!world.isClient) {
 						setHealth(Math.min(getMaxHealth(), getHealth() + 1F));
 						world.sendEntityStatus(this, (byte) 7);
-					} else if (random.nextInt(growthRandBound) == 0) {
-						setSize(getSize() + 1, true);
-						world.sendEntityStatus(this, (byte) 8);
-					} else {
-						world.sendEntityStatus(this, (byte) 8);
+						return ActionResult.SUCCESS;
 					}
+					return ActionResult.CONSUME;
 				}
-				return ActionResult.success(world.isClient);
-			} else if (stack.getItem() instanceof DyeItem) {
+			}
+			if (
+					(BLConfig.pet.enableHoneyAmassing && BouncyLife.honeyTag.contains(stack.getItem()))
+					|| (BLConfig.pet.enableRottenFleshAmassing && stack.getItem() == Items.ROTTEN_FLESH)
+			) {
+				if (getSize() < BLConfig.pet.amassSizeLimit) {
+					eat(player, stack);
+
+					if (!world.isClient) {
+						growthRandBound = Math.max(0, growthRandBound);
+						if (random.nextInt(growthRandBound) == 0) {
+							setSize(getSize() + 1, true);
+						}
+						world.sendEntityStatus(this, (byte) 8);
+						return ActionResult.SUCCESS;
+					}
+					return ActionResult.CONSUME;
+				}
+			}
+			if (stack.getItem() instanceof DyeItem) {
 				DyeColor nextColor = ((DyeItem) stack.getItem()).getColor();
 				if (nextColor != getColor()) {
-					if (!world.isClient()) {
-						setColor(((DyeItem) stack.getItem()).getColor());
-					}
-					if (!player.isCreative())
+					if (!player.isCreative()) {
 						stack.decrement(1);
-					return ActionResult.success(world.isClient);
+					}
+					if (world.isClient()) {
+						return ActionResult.CONSUME;
+					}
+					setColor(((DyeItem) stack.getItem()).getColor());
+					return ActionResult.SUCCESS;
 				}
-			} else if (stack.getItem() == Items.SADDLE) {
+			}
+			if (stack.getItem() == Items.SADDLE) {
 				if (!isSaddled() && getSize() >= 2) {
-					if (!world.isClient()) {
-						dataTracker.set(SADDLED, true);
-					}
 					world.playSound(player, getX(), getY(), getZ(), SoundEvents.ENTITY_PIG_SADDLE, SoundCategory.NEUTRAL, 0.5F, 1F);
-					if (!player.isCreative())
+					if (!player.isCreative()) {
 						stack.decrement(1);
-					return ActionResult.success(world.isClient);
+					}
+					if (world.isClient()) {
+						return ActionResult.CONSUME;
+					}
+					dataTracker.set(SADDLED, true);
+					return ActionResult.SUCCESS;
 				}
 			}
 			if (isSaddled() && !hasPassengers()) {
-				if (!world.isClient()) {
-					player.yaw = yaw;
-					player.pitch = pitch;
-					player.startRiding(this);
+				if (world.isClient()) {
+					return ActionResult.CONSUME;
 				}
-				return ActionResult.success(world.isClient);
+				player.yaw = yaw;
+				player.pitch = pitch;
+				player.startRiding(this);
+				return ActionResult.SUCCESS;
 			}
 		}
 		return super.interactMob(player, hand);
@@ -465,7 +484,7 @@ public class PetSlimeEntity extends TameableEntity {
 
 	@Override
 	public boolean isBreedingItem(ItemStack stack) {
-		return stack.getItem() == Items.HONEY_BOTTLE;
+		return BLConfig.pet.enableBreeding && stack.getItem() == Items.HONEY_BOTTLE;
 	}
 
 	@Override
@@ -480,7 +499,10 @@ public class PetSlimeEntity extends TameableEntity {
 	@Override
 	public boolean canBreedWith(AnimalEntity other) {
 		if (super.canBreedWith(other)) {
-			return getSize() == ((PetSlimeEntity) other).getSize();
+			int size = getSize();
+			if (size < BLConfig.pet.breedSizeLimit) {
+				return size == ((PetSlimeEntity) other).getSize();
+			}
 		}
 		return false;
 	}
