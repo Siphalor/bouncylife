@@ -46,6 +46,8 @@
 	"block.bouncylife.black_slime_block": "Black Slime Block",
 	"item.bouncylife.black_slime_ball": "Black Slime Ball",
 
+	"entity.bouncylife.pet_slime": "Pet Slime",
+
 	"subtitles.bouncylife.slime_fork.shoot": "Slime Fork shoots",
 	"subtitles.bouncylife.slime_fork.snap": "Slime Fork snaps",
 	"subtitles.bouncylife.slime_fork.stretch": "Slime Fork stretches",
