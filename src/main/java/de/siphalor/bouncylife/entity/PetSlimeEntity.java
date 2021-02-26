@@ -257,7 +257,7 @@ public class PetSlimeEntity extends TameableEntity {
 
 	@Override
 	public double getMountedHeightOffset() {
-		return super.getMountedHeightOffset() * 1.2D;
+		return getHeight() + stretch * getSize() * 0.2 - 0.3;
 	}
 
 	protected void updateStretch() {
