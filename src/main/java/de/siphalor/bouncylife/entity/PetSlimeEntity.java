@@ -114,7 +114,7 @@ public class PetSlimeEntity extends TameableEntity {
 		this.dataTracker.set(SLIME_SIZE, size);
 		this.refreshPosition();
 		this.calculateDimensions();
-		this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(size * size);
+		this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(Math.min(BLConfig.pet.maxHealthLimit, size * size));
 		this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(0.2F + 0.1F * (float)size);
 		this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(size);
 		if (heal) {

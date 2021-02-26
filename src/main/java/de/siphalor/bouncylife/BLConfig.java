@@ -70,6 +70,12 @@ public class BLConfig {
 
 		@AConfigEntry(comment = "The maximum size of a pet slime that can be reached through the breeding mechanic.")
 		public int breedSizeLimit = 10;
+
+		@AConfigEntry(comment = "Limits the maximum health of pet slimes.\nSince the maximum health is calculate as the square of the size,\n" +
+				"this could grow infinitely.\nVanilla can only display 30 hearts of a pet so this should usually be limited to 60.",
+				constraints = @AConfigConstraint(value = RangeConstraint.class, param = "1..")
+		)
+		public int maxHealthLimit = 60;
 	}
 
 	@AConfigFixer
