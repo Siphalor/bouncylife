@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id 'maven-publish'
+	id 'org.cadixdev.licenser' version '0.5.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -54,6 +55,12 @@ dependencies {
 
 	//modCompile "me.shedaniel.cloth:config-2:0.4.1"
 	//inlude "me.shedaniel.cloth:config-2:0.4.1"
+}
+
+license {
+	header = project.file('LICENSE_HEADER')
+
+	include '**/*.java'
 }
 
 processResources {
