@@ -28,6 +28,10 @@ repositories {
 		url "https://maven.siphalor.de"
 	}
 	maven {
+		name "Shedaniel's maven"
+		url "https://maven.shedaniel.me/"
+	}
+	maven {
 		name "jitpack"
 		url "https://jitpack.io"
 	}
@@ -43,6 +47,7 @@ dependencies {
 
 	modImplementation(include("de.siphalor:tweed-1.16:${project.tweed_version}") {
 		exclude group: "net.fabricmc.fabric-api"
+		exclude group: "me.shedaniel.cloth"
 	})
 
 	modImplementation(include("com.github.Chocohead:Fabric-ASM:v2.1"))
@@ -51,10 +56,12 @@ dependencies {
 
 	modRuntime("io.github.ultimateboomer:smoothboot-fabric:1.16.4-1+") {
 		exclude module: "modmenu"
+		exclude group: "me.shedaniel.cloth"
 	}
 
-	//modCompile "me.shedaniel.cloth:config-2:0.4.1"
-	//inlude "me.shedaniel.cloth:config-2:0.4.1"
+	modCompile(include("me.shedaniel.cloth:cloth-config-fabric:4.11+") {
+		exclude group: "net.fabricmc.fabric-api"
+	})
 }
 
 license {
