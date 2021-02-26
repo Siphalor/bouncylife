@@ -1,0 +1,7 @@
+{
+	"replace": false,
+	"values": [
+		"minecraft:slime_blocks",
+		"#bouncylife:colored_slime_blocks"
+	]
+}
