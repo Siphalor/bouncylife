@@ -16,5 +16,12 @@
 		"sounds": [
 			"bouncylife:fork_snap"
 		]
+	},
+	"pet_slime.amass": {
+		"subtitle": "subtitles.bouncylife.pet_slime.amass",
+		"sounds": [
+			"bouncylife:pet_slime_amass_1",
+			"bouncylife:pet_slime_amass_2"
+		]
 	}
 }

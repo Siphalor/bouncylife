@@ -391,6 +391,7 @@ public class PetSlimeEntity extends TameableEntity {
 				if (getSize() < BLConfig.pet.amassSizeLimit) {
 					eat(player, stack);
 
+					world.playSoundFromEntity(player, this, BouncyLife.soundPetAmass, SoundCategory.NEUTRAL, 2F, 1F);
 					if (!world.isClient) {
 						growthRandBound = Math.max(0, growthRandBound);
 						if (random.nextInt(growthRandBound) == 0) {
