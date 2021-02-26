@@ -57,7 +57,7 @@ public class PetSlimeEntity extends TameableEntity {
 
 	private static final ParticleEffect[] PARTICLE_EFFECTS;
 
-	private static final Ingredient TEMPT_INGREDIENT = Ingredient.ofItems(Items.HONEY_BOTTLE, Items.ROTTEN_FLESH);
+	private static final Ingredient TEMPT_INGREDIENT = Ingredient.ofItems(Items.HONEY_BOTTLE, Items.HONEY_BLOCK, Items.ROTTEN_FLESH);
 
 	private static final Identifier PLAIN_LOOT_TABLE = new Identifier(BouncyLife.MOD_ID, "entities/pet_slime/plain");
 
