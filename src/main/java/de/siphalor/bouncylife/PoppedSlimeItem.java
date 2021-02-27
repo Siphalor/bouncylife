@@ -32,7 +32,7 @@ public class PoppedSlimeItem extends Item {
 	public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
 		super.onStoppedUsing(stack, world, user, remainingUseTicks);
 		if (!world.isClient()) {
-			if (user instanceof PlayerEntity) {
+			if (user instanceof PlayerEntity && !((PlayerEntity) user).isCreative()) {
 				user.setStackInHand(user.getActiveHand(), new ItemStack(Items.STICK));
 			}
 		}
