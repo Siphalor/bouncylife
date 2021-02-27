@@ -60,7 +60,7 @@ public class SlimeForkItem extends Item {
 			EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(world, livingEntity, pos, ray, livingEntity.getBoundingBox().expand(BouncyLife.PLAYER_REACH), entity -> true);
 			if (entityHitResult != null) {
 				Entity entity = entityHitResult.getEntity();
-				if (entity.hasPassengerDeep(livingEntity)) {
+				if (BLUtil.hasPassengerDeep(entity, livingEntity)) {
 					target = entity.getRootVehicle();
 				} else {
 					shootEntity(livingEntity, entity, stack, useTime, BLConfig.bounce.otherShootPower + EnchantmentHelper.getLevel(BouncyLife.pushBackEnchantment, stack));

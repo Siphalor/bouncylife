@@ -16,6 +16,7 @@
 
 package de.siphalor.bouncylife;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.DyeItem;
@@ -53,5 +54,15 @@ public class BLUtil {
 			}
 		}
 		return null;
+	}
+
+	public static boolean hasPassengerDeep(Entity entity, Entity testPassenger) {
+		for (Entity passenger : entity.getPassengerList()) {
+			if (passenger == testPassenger) {
+				return true;
+			}
+			return hasPassengerDeep(passenger, testPassenger);
+		}
+		return false;
 	}
 }
