@@ -4,6 +4,7 @@
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
 		"MixinBlock",
+		"MixinCampfireBlockEntity",
 		"MixinLivingEntity",
 		"MixinMobEntity",
 		"MixinPistonHandler",

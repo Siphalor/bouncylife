@@ -23,5 +23,13 @@
 			"bouncylife:pet_slime_amass_1",
 			"bouncylife:pet_slime_amass_2"
 		]
+	},
+	"popped_slime.pop": {
+		"subtitle": "subtitles.bouncylife.popped_slime.pop",
+		"sounds": [
+			"bouncylife:popped_slime_pop_1",
+			"bouncylife:popped_slime_pop_2",
+			"bouncylife:popped_slime_pop_3"
+		]
 	}
 }

@@ -80,6 +80,7 @@ public class BouncyLife implements ModInitializer {
 	public static SoundEvent soundForkSnap;
 	public static SoundEvent soundForkStretch;
 	public static SoundEvent soundPetAmass;
+	public static SoundEvent soundSlimePop;
 
 	@Override
 	public void onInitialize() {
@@ -129,6 +130,7 @@ public class BouncyLife implements ModInitializer {
 		soundForkSnap    = registerSound("slime_fork.snap");
 		soundForkStretch = registerSound("slime_fork.stretch");
 		soundPetAmass    = registerSound("pet_slime.amass");
+		soundSlimePop    = registerSound("popped_slime.pop");
 
 		AttackEntityCallback.EVENT.register((playerEntity, world, hand, entity, entityHitResult) -> {
 			if (!world.isClient()) {
