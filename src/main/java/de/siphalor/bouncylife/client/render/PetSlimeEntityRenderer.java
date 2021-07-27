@@ -21,8 +21,9 @@ import de.siphalor.bouncylife.entity.PetSlimeEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -33,11 +34,11 @@ public class PetSlimeEntityRenderer extends MobEntityRenderer<PetSlimeEntity, Pe
    private static final Identifier TEXTURE = new Identifier("textures/entity/slime/slime.png");
    private static final Identifier TINTABLE_TEXTURE = new Identifier(BouncyLife.MOD_ID, "textures/entity/pet_slime/tintable.png");
 
-   public PetSlimeEntityRenderer(EntityRenderDispatcher entityRenderDispatcher) {
-      super(entityRenderDispatcher, new PetSlimeEntityModel<>(16), 0.25F);
-      this.addFeature(new PetSlimeOverlayFeatureRenderer<>(this));
-      this.addFeature(new PetSlimeBowFeatureRenderer(this));
-      this.addFeature(new PetSlimeSaddleFeatureRenderer(this));
+   public PetSlimeEntityRenderer(EntityRendererFactory.Context context) {
+      super(context, new PetSlimeEntityModel<>(context.getPart(EntityModelLayers.SLIME)), 0.25F);
+      this.addFeature(new PetSlimeOverlayFeatureRenderer<>(this, context.getModelLoader()));
+      this.addFeature(new PetSlimeBowFeatureRenderer(this, context.getModelLoader()));
+      this.addFeature(new PetSlimeSaddleFeatureRenderer(this, context.getModelLoader()));
    }
 
    @Override
@@ -54,7 +55,6 @@ public class PetSlimeEntityRenderer extends MobEntityRenderer<PetSlimeEntity, Pe
    }
 
    protected void scale(PetSlimeEntity entity, MatrixStack matrixStack, float f) {
-      float g = 0.999F;
       matrixStack.scale(0.999F, 0.999F, 0.999F);
       matrixStack.translate(0.0D, 0.0010000000474974513D, 0.0D);
       float h = (float)entity.getSize();

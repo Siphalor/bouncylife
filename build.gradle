@@ -1,13 +1,13 @@
 plugins {
-	id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'maven-publish'
 	id 'org.cadixdev.licenser' version '0.5.0'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
 	id 'com.modrinth.minotaur' version '1.1.0'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = "${project.mod_version}+mc${project.minecraft_version}"
@@ -47,21 +47,16 @@ dependencies {
 
 	modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation(include("de.siphalor:tweed-1.16:${project.tweed_version}") {
+	modImplementation(include("de.siphalor:tweed-1.17:${project.tweed_version}") {
 		exclude group: "net.fabricmc.fabric-api"
 		exclude group: "me.shedaniel.cloth"
 	})
 
-	modImplementation(include("com.github.Chocohead:Fabric-ASM:v2.1"))
+	modImplementation(include("com.github.PlanetTeamSpeakk:Fabric-ASM:master-SNAPSHOT"))
 
-	modCompile(include("de.siphalor:pushtocraft-1.16:1.0.5+"))
+	modImplementation(include("de.siphalor:pushtocraft-1.17:1.0.5+"))
 
-	modRuntime("io.github.ultimateboomer:smoothboot-fabric:1.16.4-1+") {
-		exclude module: "modmenu"
-		exclude group: "me.shedaniel.cloth"
-	}
-
-	modCompile(include("me.shedaniel.cloth:cloth-config-fabric:4.11+") {
+	modImplementation(include("me.shedaniel.cloth:cloth-config-fabric:5.0+") {
 		exclude group: "net.fabricmc.fabric-api"
 	})
 }
@@ -73,17 +68,14 @@ license {
 }
 
 processResources {
-	inputs.property "version", project.version
-	exclude "**/template"
-	exclude "**/*.py"
+	inputs.property "version", version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
-	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
+	afterEvaluate {
+		from(sourceSets.main.resources.srcDirs) {
+			include "fabric.mod.json"
+			expand "version": version
+			duplicatesStrategy DuplicatesStrategy.INCLUDE
+		}
 	}
 }
 

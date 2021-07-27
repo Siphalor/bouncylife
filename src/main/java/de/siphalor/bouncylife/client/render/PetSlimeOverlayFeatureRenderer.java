@@ -23,14 +23,17 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
+import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.DyeColor;
 
 public class PetSlimeOverlayFeatureRenderer<T extends PetSlimeEntity> extends FeatureRenderer<T, PetSlimeEntityModel<T>> {
-	protected PetSlimeEntityModel<T> model = new PetSlimeEntityModel<>(0);
+	protected PetSlimeEntityModel<T> model;
 
-	public PetSlimeOverlayFeatureRenderer(FeatureRendererContext<T, PetSlimeEntityModel<T>> context) {
+	public PetSlimeOverlayFeatureRenderer(FeatureRendererContext<T, PetSlimeEntityModel<T>> context, EntityModelLoader loader) {
 		super(context);
+		model = new PetSlimeEntityModel<>(loader.getModelPart(EntityModelLayers.SLIME_OUTER));
 	}
 
 	@Override

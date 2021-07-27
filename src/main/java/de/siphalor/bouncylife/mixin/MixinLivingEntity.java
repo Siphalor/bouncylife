@@ -46,10 +46,10 @@ public abstract class MixinLivingEntity extends Entity {
 	private float bouncylife$damageAmount = 0.0F;
 
 	@Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
-	public void handleFallDamage(float float_1, float float_2, CallbackInfoReturnable<Boolean> callbackInfo) {
+	public void handleFallDamage(float fallDistance, float fallMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> callbackInfo) {
         for(ItemStack stack : getArmorItems()) {
         	if(stack.getItem() == BouncyLife.shoes) {
-        		callbackInfo.setReturnValue(super.handleFallDamage(float_1, float_2));
+        		callbackInfo.setReturnValue(super.handleFallDamage(fallDistance, fallMultiplier, damageSource));
         		return;
 			}
 		}

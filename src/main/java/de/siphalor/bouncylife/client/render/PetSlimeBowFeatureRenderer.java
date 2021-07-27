@@ -17,6 +17,7 @@
 package de.siphalor.bouncylife.client.render;
 
 import de.siphalor.bouncylife.BouncyLife;
+import de.siphalor.bouncylife.client.BouncyLifeClient;
 import de.siphalor.bouncylife.entity.PetSlimeEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -24,16 +25,18 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
+import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.render.entity.model.SlimeEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class PetSlimeBowFeatureRenderer extends FeatureRenderer<PetSlimeEntity, PetSlimeEntityModel<PetSlimeEntity>> {
 	private static final Identifier BOW_TEX = new Identifier(BouncyLife.MOD_ID, "textures/entity/pet_slime/bow.png");
-	private final PetSlimeEntityModel<PetSlimeEntity> model = new PetSlimeEntityModel<>(-1);
+	private final PetSlimeEntityModel<PetSlimeEntity> model;
 
-	public PetSlimeBowFeatureRenderer(FeatureRendererContext<PetSlimeEntity, PetSlimeEntityModel<PetSlimeEntity>> context) {
+	public PetSlimeBowFeatureRenderer(FeatureRendererContext<PetSlimeEntity, PetSlimeEntityModel<PetSlimeEntity>> context, EntityModelLoader loader) {
 		super(context);
+		model = new PetSlimeEntityModel<>(loader.getModelPart(BouncyLifeClient.PET_SLIME_ACCESSOIRIES_LAYER));
 	}
 
 	@Override

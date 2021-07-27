@@ -108,7 +108,7 @@ public class BouncyLife implements ModInitializer {
 
 		slimeBlocks = new Block[DyeColor.values().length];
 		for (DyeColor color : DyeColor.values()) {
-			Block block = new SlimeBlock(FabricBlockSettings.copyOf(Blocks.SLIME_BLOCK).materialColor(color.getMaterialColor()));
+			Block block = new SlimeBlock(FabricBlockSettings.copyOf(Blocks.SLIME_BLOCK).materialColor(color.getMapColor()));
 			Identifier identifier = new Identifier(MOD_ID, color.getName() + "_slime_block");
 			Registry.register(Registry.BLOCK, identifier, block);
 			BlockItem item = new BlockItem(block, new Item.Settings().group(itemGroup));
@@ -140,7 +140,7 @@ public class BouncyLife implements ModInitializer {
 				) {
 					if (playerEntity.getStackInHand(hand).getItem() == Items.STICK) {
 						world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1.0F, 1.0F);
-						entity.remove();
+						entity.remove(Entity.RemovalReason.KILLED);
 						if (!playerEntity.isCreative()) {
 							playerEntity.getStackInHand(hand).decrement(1);
 						}

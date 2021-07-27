@@ -17,6 +17,7 @@
 package de.siphalor.bouncylife.mixin;
 
 import de.siphalor.bouncylife.BouncyLife;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.CampfireBlockEntity;
@@ -24,6 +25,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,16 +34,16 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(CampfireBlockEntity.class)
 public abstract class MixinCampfireBlockEntity extends BlockEntity {
-	public MixinCampfireBlockEntity(BlockEntityType<?> type) {
-		super(type);
+	public MixinCampfireBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	@Inject(
-			method = "updateItemsBeingCooked",
-			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/block/entity/CampfireBlockEntity;getPos()Lnet/minecraft/util/math/BlockPos;"),
+			method = "litServerTick",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/ItemScatterer;spawn(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V"),
 			locals = LocalCapture.CAPTURE_FAILSOFT
 	)
-	private void onItemsCooked(CallbackInfo callbackInfo, int i, ItemStack base, Inventory craftingInventory, ItemStack result, BlockPos blockPos) {
+	private static void onItemsCooked(World world, BlockPos blockPos, BlockState state, CampfireBlockEntity blockEntity, CallbackInfo callbackInfo, boolean dirty, int i, ItemStack base, Inventory craftingInventory, ItemStack result) {
 		world.playSound(null, blockPos, BouncyLife.soundSlimePop, SoundCategory.BLOCKS, 1F, 1F);
 	}
 }

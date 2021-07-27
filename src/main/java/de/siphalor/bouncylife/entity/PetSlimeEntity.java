@@ -19,6 +19,11 @@ package de.siphalor.bouncylife.entity;
 import de.siphalor.bouncylife.BLConfig;
 import de.siphalor.bouncylife.BLUtil;
 import de.siphalor.bouncylife.BouncyLife;
+import de.siphalor.bouncylife.entity.PetSlimeEntity.FaceTowardTargetGoal;
+import de.siphalor.bouncylife.entity.PetSlimeEntity.MoveGoal;
+import de.siphalor.bouncylife.entity.PetSlimeEntity.RandomLookGoal;
+import de.siphalor.bouncylife.entity.PetSlimeEntity.SlimeMoveControl;
+import de.siphalor.bouncylife.entity.PetSlimeEntity.SwimmingGoal;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.*;
@@ -42,7 +47,7 @@ import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
@@ -167,8 +172,8 @@ public class PetSlimeEntity extends TameableEntity {
 		return dataTracker.get(SADDLED);
 	}
 
-	public void writeCustomDataToTag(CompoundTag tag) {
-		super.writeCustomDataToTag(tag);
+	public void writeCustomDataToNbt(NbtCompound tag) {
+		super.writeCustomDataToNbt(tag);
 		tag.putInt("Size", this.getSize() - 1);
 		if (getColor() != null)
 			tag.putString("Color", getColor().getName());
@@ -176,7 +181,7 @@ public class PetSlimeEntity extends TameableEntity {
 		tag.putBoolean("wasOnGround", this.onGroundLastTick);
 	}
 
-	public void readCustomDataFromTag(CompoundTag tag) {
+	public void readCustomDataFromNbt(NbtCompound tag) {
 		int i = tag.getInt("Size");
 		if (i < 0) {
 			i = 0;
@@ -185,7 +190,7 @@ public class PetSlimeEntity extends TameableEntity {
 		setColor(DyeColor.byName(tag.getString("Color"), null));
 		dataTracker.set(SADDLED, tag.getBoolean("Saddled"));
 		this.setSize(i + 1, false);
-		super.readCustomDataFromTag(tag);
+		super.readCustomDataFromNbt(tag);
 		this.onGroundLastTick = tag.getBoolean("wasOnGround");
 	}
 
@@ -231,12 +236,12 @@ public class PetSlimeEntity extends TameableEntity {
 		if (isAlive()) {
 			if (hasPassengers()) {
 				Entity rider = getPrimaryPassenger();
-				yaw = rider.yaw;
-				prevYaw = rider.yaw;
-				pitch = rider.pitch;
-				setRotation(yaw, pitch);
-				bodyYaw = rider.yaw;
-				headYaw = rider.yaw;
+				setYaw(rider.getYaw());
+				prevYaw = rider.getYaw();
+				setPitch(rider.getPitch());
+				setRotation(getYaw(), getPitch());
+				bodyYaw = rider.getYaw();
+				headYaw = rider.getYaw();
 			}
 			super.travel(movementInput);
 		}
@@ -277,14 +282,14 @@ public class PetSlimeEntity extends TameableEntity {
 		double e = this.getY();
 		double f = this.getZ();
 		super.calculateDimensions();
-		this.updatePosition(d, e, f);
+		this.setPosition(d, e, f);
 	}
 
 	public void onTrackedDataSet(TrackedData<?> data) {
 		if (SLIME_SIZE.equals(data)) {
 			this.calculateDimensions();
-			this.yaw = this.headYaw;
-			this.bodyYaw = this.headYaw;
+			setYaw(headYaw);
+			setBodyYaw(headYaw);
 			if (this.isTouchingWater() && this.random.nextInt(20) == 0) {
 				this.onSwimmingStart();
 			}
@@ -297,7 +302,8 @@ public class PetSlimeEntity extends TameableEntity {
 		return super.getType();
 	}
 
-	public void remove() {
+	@Override
+	public void remove(RemovalReason removalReason) {
 		int size = this.getSize();
 		if (!this.world.isClient && size > 1 && this.getHealth() <= 0.0F) {
 			if (isSaddled()) {
@@ -330,7 +336,7 @@ public class PetSlimeEntity extends TameableEntity {
 			}
 		}
 
-		super.remove();
+		super.remove(removalReason);
 	}
 
 	public void pushAwayFrom(Entity entity) {
@@ -345,7 +351,7 @@ public class PetSlimeEntity extends TameableEntity {
 			int i = this.getSize();
 			if (this.squaredDistanceTo(target) < 0.6D * (double)i * 0.6D * (double)i && this.canSee(target) && target.damage(DamageSource.mob(this), this.getDamageAmount())) {
 				this.playSound(SoundEvents.ENTITY_SLIME_ATTACK, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-				this.dealDamage(this, target);
+				this.applyDamageEffects(this, target);
 			}
 		}
 
@@ -368,7 +374,7 @@ public class PetSlimeEntity extends TameableEntity {
 		if (isOwner(player)) {
 			ItemStack stack = player.getStackInHand(hand);
 			if (canEat() && isBreedingItem(stack) && getSize() < BLConfig.pet.breedSizeLimit) {
-				eat(player, stack);
+				eat(player, hand, stack);
 				if (!world.isClient) {
 					lovePlayer(player);
 				}
@@ -376,7 +382,7 @@ public class PetSlimeEntity extends TameableEntity {
 			}
 			if (getHealth() < getMaxHealth()) {
 				if (TEMPT_INGREDIENT.test(stack)) {
-					eat(player, stack);
+					eat(player, hand, stack);
 					if (!world.isClient) {
 						setHealth(Math.min(getMaxHealth(), getHealth() + 1F));
 						world.sendEntityStatus(this, (byte) 7);
@@ -390,7 +396,7 @@ public class PetSlimeEntity extends TameableEntity {
 					|| (BLConfig.pet.enableRottenFleshAmassing && stack.getItem() == Items.ROTTEN_FLESH)
 			) {
 				if (getSize() < BLConfig.pet.amassSizeLimit) {
-					eat(player, stack);
+					eat(player, hand, stack);
 
 					world.playSoundFromEntity(player, this, BouncyLife.soundPetAmass, SoundCategory.NEUTRAL, 2F, 1F);
 					if (!world.isClient) {
@@ -434,8 +440,8 @@ public class PetSlimeEntity extends TameableEntity {
 				if (world.isClient()) {
 					return ActionResult.CONSUME;
 				}
-				player.yaw = yaw;
-				player.pitch = pitch;
+				player.setYaw(getYaw());
+				player.setPitch(getPitch());
 				player.startRiding(this);
 				return ActionResult.SUCCESS;
 			}
@@ -484,7 +490,7 @@ public class PetSlimeEntity extends TameableEntity {
 	}
 
 	@Override
-	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable CompoundTag entityTag) {
+	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityTag) {
 		int i = this.random.nextInt(3);
 		if (i < 2 && this.random.nextFloat() < 0.5F * difficulty.getClampedLocalDifficulty()) {
 			++i;
@@ -506,10 +512,10 @@ public class PetSlimeEntity extends TameableEntity {
 	}
 
 	@Override
-	protected void eat(PlayerEntity player, ItemStack stack) {
+	protected void eat(PlayerEntity player, Hand hand, ItemStack stack) {
 		boolean honeyBottle = stack.getItem() == Items.HONEY_BOTTLE;
-		super.eat(player, stack);
-		if (honeyBottle && !player.abilities.creativeMode) {
+		super.eat(player, hand, stack);
+		if (honeyBottle && !player.isCreative()) {
 			player.giveItemStack(new ItemStack(Items.GLASS_BOTTLE));
 		}
 	}
@@ -652,7 +658,7 @@ public class PetSlimeEntity extends TameableEntity {
 			} else if (!livingEntity.isAlive()) {
 				return false;
 			} else {
-				return (!(livingEntity instanceof PlayerEntity) || !((PlayerEntity) livingEntity).abilities.invulnerable) && this.slime.getMoveControl() instanceof SlimeMoveControl;
+				return (!(livingEntity instanceof PlayerEntity) || !livingEntity.isInvulnerable()) && this.slime.getMoveControl() instanceof SlimeMoveControl;
 			}
 		}
 
@@ -667,7 +673,7 @@ public class PetSlimeEntity extends TameableEntity {
 				return false;
 			} else if (!livingEntity.isAlive()) {
 				return false;
-			} else if (livingEntity instanceof PlayerEntity && ((PlayerEntity)livingEntity).abilities.invulnerable) {
+			} else if (livingEntity instanceof PlayerEntity && livingEntity.isInvulnerable()) {
 				return false;
 			} else {
 				return --this.ticksLeft > 0;
@@ -676,7 +682,7 @@ public class PetSlimeEntity extends TameableEntity {
 
 		public void tick() {
 			this.slime.lookAtEntity(this.slime.getTarget(), 10.0F, 10.0F);
-			((PetSlimeEntity.SlimeMoveControl)this.slime.getMoveControl()).look(this.slime.yaw, this.slime.canAttack());
+			((PetSlimeEntity.SlimeMoveControl)this.slime.getMoveControl()).look(this.slime.getYaw(), this.slime.canAttack());
 		}
 	}
 
@@ -689,7 +695,7 @@ public class PetSlimeEntity extends TameableEntity {
 		public SlimeMoveControl(PetSlimeEntity slime) {
 			super(slime);
 			this.slime = slime;
-			this.targetYaw = 180.0F * slime.yaw / 3.1415927F;
+			this.targetYaw = 180.0F * slime.getYaw() / 3.1415927F;
 		}
 
 		public void look(float targetYaw, boolean jumpOften) {
@@ -703,9 +709,9 @@ public class PetSlimeEntity extends TameableEntity {
 		}
 
 		public void tick() {
-			this.entity.yaw = this.changeAngle(this.entity.yaw, this.targetYaw, 90.0F);
-			this.entity.headYaw = this.entity.yaw;
-			this.entity.bodyYaw = this.entity.yaw;
+			this.entity.setYaw(this.wrapDegrees(this.entity.getYaw(), this.targetYaw, 90.0F));
+			this.entity.headYaw = this.entity.getYaw();
+			this.entity.bodyYaw = this.entity.getYaw();
 			if (this.state != State.MOVE_TO) {
 				this.entity.setForwardSpeed(0.0F);
 			} else {
@@ -754,7 +760,7 @@ public class PetSlimeEntity extends TameableEntity {
 					self.setCustomName(mate.getCustomName());
 				}
 				self.setPersistent();
-				mate.removed = true;
+				mate.setRemoved(RemovalReason.DISCARDED);
 			}
 		}
 	}

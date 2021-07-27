@@ -95,7 +95,7 @@ public class SlimeForkItem extends Item {
 		multiplier *= Math.min(20F, getMaxUseTime(stack) - useTime) / 20F;
 		Vec3d velocity = shooter.getRotationVector().multiply(multiplier);
 		entity.addVelocity(velocity.x, velocity.y, velocity.z);
-		Packet<?> packet = new EntityVelocityUpdateS2CPacket(entity.getEntityId(), entity.getVelocity());
+		Packet<?> packet = new EntityVelocityUpdateS2CPacket(entity.getId(), entity.getVelocity());
 		for (ServerPlayerEntity player : PlayerLookup.tracking(entity)) {
 			player.networkHandler.sendPacket(packet);
 		}
