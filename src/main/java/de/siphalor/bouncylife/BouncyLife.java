@@ -154,7 +154,8 @@ public class BouncyLife implements ModInitializer {
 	}
 
 	private static <T, S extends T> S register(Registry<T> registry, String id, S val) {
-		return Registry.register(registry, new Identifier(MOD_ID, id), val);
+		Registry.register(registry, new Identifier(MOD_ID, id), val);
+		return val;
 	}
 
 	private static SoundEvent registerSound(String id) {
