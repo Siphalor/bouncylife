@@ -121,21 +121,8 @@ publishing {
 
 // Mod sites
 
-def getChangelog() {
-	def commits = 'git log -20 --format=oneline'.execute().text.readLines()
-	def versionCommit = null
-	for (commit in commits) {
-		if (commit.contains('Version')) {
-			versionCommit = commit.split(' ')[0]
-			break
-		}
-	}
-	if (versionCommit == null) {
-		return """## Version ${project.mod_version}
-
-No changelog found!"""
-	}
-	return ('git log -1 --format=format:##%x20%s%n%n%b%nRelease%x20by%x20%an ' + versionCommit).execute().text.trim()
+static def getChangelog() {
+	return 'git log -1 --format=format:##%x20%s%n%n%b%nRelease%x20by%x20%an --grep Version'.execute().text.trim()
 }
 
 task uploadToModSites {
@@ -143,23 +130,17 @@ task uploadToModSites {
 	group = "upload"
 }
 
-if (project.hasProperty("siphalorCurseForgeApi")) {
+if (project.hasProperty("curseforgeToken")) {
 	curseforge {
-		apiKey project.siphalorCurseForgeApi
-		def changes = getChangelog()
+		apiKey project.curseforgeToken
 		project {
 			id = "321743"
 			releaseType = project.mod_release
 			changelogType = "markdown"
-			changelog = changes
+			changelog = project.getChangelog()
+			addGameVersion("Fabric")
 			for (version in ((String) project.mod_mc_versions).split(";")) {
 				addGameVersion(version)
-			}
-			relations {
-				embeddedLibrary "cloth-config"
-				embeddedLibrary "tweed-api"
-				embeddedLibrary "push-to-craft"
-				optionalDependency "modmenu"
 			}
 			mainArtifact(remapJar) {
 				displayName = "[${project.mod_mc_version_specifier}] ${project.mod_version}"
@@ -169,23 +150,31 @@ if (project.hasProperty("siphalorCurseForgeApi")) {
 	uploadToModSites.finalizedBy(tasks.curseforge)
 }
 
-import com.modrinth.minotaur.TaskModrinthUpload
-if (project.hasProperty("siphalorModrinthApi")) {
-	task modrinth (type: TaskModrinthUpload) {
-		group = "upload"
-		dependsOn(build)
-
-		token = project.siphalorModrinthApi
-		projectId = "61Enc3x5"
-		versionNumber = version
-		versionName = "[${project.mod_mc_version_specifier}] ${project.mod_version}"
-		changelog = getChangelog()
-		uploadFile = remapJar
-		releaseType = project.mod_release
-		for (version in ((String) project.mod_mc_versions).split(";")) {
-			addGameVersion(version)
-		}
-		addLoader("fabric")
+modrinth {
+	if (project.hasProperty("modrinthToken")) {
+		token = project.modrinthToken
+		uploadToModSites.finalizedBy(tasks.modrinth)
 	}
-	uploadToModSites.finalizedBy(tasks.modrinth)
+
+	projectId = "61Enc3x5"
+	versionName = "[$project.mod_mc_version_specifier] $project.mod_version"
+	versionType = project.mod_release
+	changelog = project.getChangelog()
+	uploadFile = remapJar
+	gameVersions = project.mod_mc_versions.split(";") as List<String>
+	loaders = ["fabric"]
+}
+tasks.modrinth.group = "upload"
+
+if (project.hasProperty("githubToken")) {
+	githubRelease {
+		token project.githubToken
+		targetCommitish = project.minecraft_major_version
+		releaseName = "Version $project.mod_version for $project.mod_mc_version_specifier"
+		body = project.getChangelog()
+		releaseAssets remapJar.getArchiveFile()
+		prerelease = mod_release != "release"
+		overwrite = true
+	}
+	uploadToModSites.finalizedBy(tasks.githubRelease)
 }
