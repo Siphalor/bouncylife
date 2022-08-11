@@ -20,7 +20,7 @@
 		"client": [
 			"de.siphalor.bouncylife.client.BouncyLifeClient"
 		],
-		"tweed:config": [
+		"tweed4:config": [
 			"de.siphalor.bouncylife.BLConfig"
 		],
 		"mm:early_risers": [
