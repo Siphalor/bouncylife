@@ -36,7 +36,7 @@ public class PetSlimeEntityModel<T extends Entity> extends TintableCompositeMode
 				EntityModelPartNames.CUBE,
 				ModelPartBuilder.create()
 						.uv(0, 0)
-						.cuboid(-5.0F, 16.0F, -5.001F, 10.0F, 10.0F, 8.0F, Dilation.NONE, 1F, 1F),
+						.cuboid(-5.0F, 15.99F, -5.0F, 10.0F, 10.0F, 8.0F, Dilation.NONE, 1F, 1F),
 				ModelTransform.NONE
 		);
 		return TexturedModelData.of(modelData, 64, 32);
