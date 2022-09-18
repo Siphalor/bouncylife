@@ -19,11 +19,6 @@ package de.siphalor.bouncylife.entity;
 import de.siphalor.bouncylife.BLConfig;
 import de.siphalor.bouncylife.BLUtil;
 import de.siphalor.bouncylife.BouncyLife;
-import de.siphalor.bouncylife.entity.PetSlimeEntity.FaceTowardTargetGoal;
-import de.siphalor.bouncylife.entity.PetSlimeEntity.MoveGoal;
-import de.siphalor.bouncylife.entity.PetSlimeEntity.RandomLookGoal;
-import de.siphalor.bouncylife.entity.PetSlimeEntity.SlimeMoveControl;
-import de.siphalor.bouncylife.entity.PetSlimeEntity.SwimmingGoal;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.*;
@@ -118,7 +113,7 @@ public class PetSlimeEntity extends TameableEntity {
 		this.targetSelector.add(1, new TrackOwnerAttackerGoal(this));
 		this.targetSelector.add(2, new AttackWithOwnerGoal(this));
 		this.targetSelector.add(3, (new RevengeGoal(this)).setGroupRevenge());
-		this.targetSelector.add(4, new FollowTargetGoal<>(this, ZombieEntity.class, false));
+		this.targetSelector.add(4, new ActiveTargetGoal<>(this, ZombieEntity.class, false));
 	}
 
 	protected void initDataTracker() {
