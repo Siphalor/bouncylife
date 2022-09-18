@@ -136,7 +136,7 @@ public class PetSlimeEntity extends TameableEntity {
 		this.dataTracker.set(SLIME_SIZE, size);
 		this.refreshPosition();
 		this.calculateDimensions();
-		this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(Math.min(BLConfig.pet.maxHealthLimit, size * size));
+		this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(Math.min(BLConfig.pets.maxHealthLimit, size * size));
 		this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(0.2F + 0.1F * (float)size);
 		this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(size);
 		if (heal) {
@@ -373,7 +373,7 @@ public class PetSlimeEntity extends TameableEntity {
 	public ActionResult interactMob(PlayerEntity player, Hand hand) {
 		if (isOwner(player)) {
 			ItemStack stack = player.getStackInHand(hand);
-			if (canEat() && isBreedingItem(stack) && getSize() < BLConfig.pet.breedSizeLimit) {
+			if (canEat() && isBreedingItem(stack) && getSize() < BLConfig.pets.breedSizeLimit) {
 				eat(player, hand, stack);
 				if (!world.isClient) {
 					lovePlayer(player);
@@ -392,10 +392,10 @@ public class PetSlimeEntity extends TameableEntity {
 				}
 			}
 			if (
-					(BLConfig.pet.enableHoneyAmassing && BouncyLife.honeyTag.contains(stack.getItem()))
-					|| (BLConfig.pet.enableRottenFleshAmassing && stack.getItem() == Items.ROTTEN_FLESH)
+					(BLConfig.pets.enableHoneyAmassing && BouncyLife.honeyTag.contains(stack.getItem()))
+					|| (BLConfig.pets.enableRottenFleshAmassing && stack.getItem() == Items.ROTTEN_FLESH)
 			) {
-				if (getSize() < BLConfig.pet.amassSizeLimit) {
+				if (getSize() < BLConfig.pets.amassSizeLimit) {
 					eat(player, hand, stack);
 
 					world.playSoundFromEntity(player, this, BouncyLife.soundPetAmass, SoundCategory.NEUTRAL, 2F, 1F);
@@ -508,7 +508,7 @@ public class PetSlimeEntity extends TameableEntity {
 
 	@Override
 	public boolean isBreedingItem(ItemStack stack) {
-		return BLConfig.pet.enableBreeding && stack.getItem() == Items.HONEY_BOTTLE;
+		return BLConfig.pets.enableBreeding && stack.getItem() == Items.HONEY_BOTTLE;
 	}
 
 	@Override
@@ -524,7 +524,7 @@ public class PetSlimeEntity extends TameableEntity {
 	public boolean canBreedWith(AnimalEntity other) {
 		if (super.canBreedWith(other)) {
 			int size = getSize();
-			if (size < BLConfig.pet.breedSizeLimit) {
+			if (size < BLConfig.pets.breedSizeLimit) {
 				return size == ((PetSlimeEntity) other).getSize();
 			}
 		}

@@ -18,24 +18,24 @@ package de.siphalor.bouncylife;
 
 import com.google.common.base.CaseFormat;
 import com.mojang.datafixers.util.Pair;
-import de.siphalor.tweed.config.ConfigEnvironment;
-import de.siphalor.tweed.config.ConfigScope;
-import de.siphalor.tweed.config.annotated.AConfigConstraint;
-import de.siphalor.tweed.config.annotated.AConfigEntry;
-import de.siphalor.tweed.config.annotated.AConfigFixer;
-import de.siphalor.tweed.config.annotated.ATweedConfig;
-import de.siphalor.tweed.config.constraints.RangeConstraint;
-import de.siphalor.tweed.data.DataObject;
-import de.siphalor.tweed.data.DataValue;
+import de.siphalor.tweed4.annotated.*;
+import de.siphalor.tweed4.config.ConfigEnvironment;
+import de.siphalor.tweed4.config.ConfigScope;
+import de.siphalor.tweed4.config.constraints.RangeConstraint;
+import de.siphalor.tweed4.data.DataList;
+import de.siphalor.tweed4.data.DataObject;
+import de.siphalor.tweed4.data.DataValue;
 
 import java.util.ArrayList;
 
 @SuppressWarnings("WeakerAccess")
-@ATweedConfig(file = BouncyLife.MOD_ID, casing = CaseFormat.LOWER_HYPHEN, tailors = "tweed:cloth", environment = ConfigEnvironment.UNIVERSAL, scope = ConfigScope.SMALLEST)
+@ATweedConfig(file = BouncyLife.MOD_ID, casing = CaseFormat.LOWER_HYPHEN, tailors = "tweed4:coat", environment = ConfigEnvironment.UNIVERSAL, scope = ConfigScope.SMALLEST)
+@AConfigBackground("textures/block/green_concrete_powder.png")
 public class BLConfig {
 	@AConfigEntry(comment = "Configs related to the slime fork or the slime armor")
 	public static Bounce bounce;
 
+	@AConfigBackground("textures/block/stripped_spruce_log.png")
 	public static class Bounce {
 		@AConfigEntry(comment = "Sets the factor used when determining the velocity after the fork has been used", constraints = {
 				@AConfigConstraint(value = RangeConstraint.class, param = "0..100")
@@ -66,12 +66,13 @@ public class BLConfig {
 		public boolean slimeArmorThorns = true;
 	}
 
-	@AConfigEntry(comment = "Configs related to petting slimes",
+	@AConfigEntry(comment = "Configs related to befriending slimes",
 			environment = ConfigEnvironment.SYNCED
 	)
-	public static Pet pet;
+	public static Pets pets;
 
-	public static class Pet {
+	@AConfigBackground("textures/block/red_terracotta.png")
+	public static class Pets {
 		@AConfigEntry(comment = "Enable amassing slimes by feeding them honey.")
 		public boolean enableHoneyAmassing = true;
 
@@ -99,12 +100,13 @@ public class BLConfig {
 	}
 
 	@AConfigFixer
-	public static <T> void fixMainConfig(DataObject<T> main, DataObject<T> main_) {
+	public static <V extends DataValue<V, L, O>, L extends DataList<V, L, O>, O extends DataObject<V, L, O>>
+	void fixMainConfig(O main, O main_) {
 		// Detect the old config where there were no categories
 		if (!main.has("bounce")) {
-			DataObject<T> bounceObj = main.addObject("bounce");
+			O bounceObj = main.addObject("bounce");
 			ArrayList<String> oldEntries = new ArrayList<>(main.size());
-			for (Pair<String, DataValue<T>> pair : main) {
+			for (Pair<String, V> pair : main) {
 				switch (pair.getFirst()) {
 					case "bounce":
 						continue;

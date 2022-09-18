@@ -2,6 +2,6 @@
 	"replace": false,
 	"values": [
 		"minecraft:slime_ball",
-		"#bouncy_life:colored_slime_balls"
+		"#bouncylife:colored_slime_balls"
 	]
 }
