@@ -771,8 +771,6 @@ public class PetSlimeEntity extends TameableEntity implements JumpingMount {
 			} else if (this.state == State.MOVE_TO) {
 				shallMove = true;
 
-				((ServerWorld)entity.world).spawnParticles(new ItemStackParticleEffect(ParticleTypes.ITEM, new ItemStack(Items.REDSTONE)), targetX, targetY + 0.5D, targetZ, 2, 0.1D, 0.1D, 0.1D, 0.0D);
-
 				double d = this.targetX - this.entity.getX();
 				double e = this.targetZ - this.entity.getZ();
 				double o = this.targetY - this.entity.getY();
