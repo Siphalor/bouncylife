@@ -49,7 +49,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
@@ -220,6 +219,11 @@ public class PetSlimeEntity extends TameableEntity implements JumpingMount {
 			return ParticleTypes.ITEM_SLIME;
 		}
 		return PARTICLE_EFFECTS[color];
+	}
+
+	@Override
+	public boolean isLogicalSideForUpdatingMovement() {
+		return !this.world.isClient;
 	}
 
 	public void tick() {
@@ -888,8 +892,8 @@ public class PetSlimeEntity extends TameableEntity implements JumpingMount {
 					}
 				} else {
 					if (mateName != null) {
-						if (!selfName.asString().equals(mateName.asString())) {
-							self.setCustomName(new LiteralText(selfName.asString() + "-" + mateName.asString()));
+						if (!selfName.getString().equals(mateName.getString())) {
+							self.setCustomName(selfName.copy().append("-").append(mateName));
 						}
 					}
 				}
