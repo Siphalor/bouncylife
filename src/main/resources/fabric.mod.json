@@ -27,6 +27,7 @@
 			"de.siphalor.bouncylife.BLEarlyRiser"
 		]
 	},
+	"accessWidener": "bouncylife.accesswidener",
 	"mixins": [
 		"bouncylife.mixins.json"
 	],

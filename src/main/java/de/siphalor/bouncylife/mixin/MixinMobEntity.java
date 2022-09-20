@@ -53,7 +53,7 @@ public abstract class MixinMobEntity extends LivingEntity {
 		if (getClass().equals(SlimeEntity.class)) {
 			ItemStack stack = player.getStackInHand(hand);
 			Item item = stack.getItem();
-			if (BouncyLife.honeyTag.contains(item)) {
+			if (stack.isIn(BouncyLife.honeyTag)) {
 				if (!player.isCreative()) {
 					stack.decrement(1);
 					if (item == Items.HONEY_BOTTLE) {

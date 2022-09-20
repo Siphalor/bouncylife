@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinLivingEntity extends Entity {
 	@Shadow public abstract Iterable<ItemStack> getArmorItems();
 
-	@Shadow @Final private DefaultedList<ItemStack> equippedArmor;
+	@Shadow @Final private DefaultedList<ItemStack> syncedArmorStacks;
 
 	public MixinLivingEntity(EntityType<?> entityType_1, World world_1) {
 		super(entityType_1, world_1);
@@ -69,7 +69,7 @@ public abstract class MixinLivingEntity extends Entity {
 	public void damage(DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         if(!world.isClient()) {
         	if(damageSource == DamageSource.FLY_INTO_WALL) {
-        		if(BouncyLife.isSlimeArmor(equippedArmor.get(EquipmentSlot.HEAD.getEntitySlotId()))) {
+        		if(BouncyLife.isSlimeArmor(syncedArmorStacks.get(EquipmentSlot.HEAD.getEntitySlotId()))) {
 					callbackInfoReturnable.setReturnValue(false);
 				}
 			}

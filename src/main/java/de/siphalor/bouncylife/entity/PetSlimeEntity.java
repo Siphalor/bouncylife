@@ -410,7 +410,7 @@ public class PetSlimeEntity extends TameableEntity implements JumpingMount {
 				}
 			}
 			if (
-					(BLConfig.pets.enableHoneyAmassing && BouncyLife.honeyTag.contains(stack.getItem()))
+					(BLConfig.pets.enableHoneyAmassing && stack.isIn(BouncyLife.honeyTag))
 							|| (BLConfig.pets.enableRottenFleshAmassing && stack.getItem() == Items.ROTTEN_FLESH)
 			) {
 				if (getSize() < BLConfig.pets.amassSizeLimit) {
@@ -493,7 +493,7 @@ public class PetSlimeEntity extends TameableEntity implements JumpingMount {
 		return 0.4F * (float) this.getSize();
 	}
 
-	public int getLookPitchSpeed() {
+	public int getMaxLookPitchChange() {
 		return 0;
 	}
 
@@ -771,8 +771,6 @@ public class PetSlimeEntity extends TameableEntity implements JumpingMount {
 			} else if (this.state == State.MOVE_TO) {
 				shallMove = true;
 
-				((ServerWorld)entity.world).spawnParticles(new ItemStackParticleEffect(ParticleTypes.ITEM, new ItemStack(Items.REDSTONE)), targetX, targetY + 0.5D, targetZ, 2, 0.1D, 0.1D, 0.1D, 0.0D);
-
 				double d = this.targetX - this.entity.getX();
 				double e = this.targetZ - this.entity.getZ();
 				double o = this.targetY - this.entity.getY();
@@ -857,7 +855,7 @@ public class PetSlimeEntity extends TameableEntity implements JumpingMount {
 
 		@Override
 		public void tick() {
-			self.getLookControl().lookAt(mate, 10.0F, (float) self.getLookPitchSpeed());
+			self.getLookControl().lookAt(mate, 10.0F, (float) self.getMaxLookPitchChange());
 			self.getNavigation().startMovingTo(mate, 1.0D);
 			timer++;
 			if (timer >= 60 && self.squaredDistanceTo(mate) < self.getWidth() * self.getWidth() * 4) {
