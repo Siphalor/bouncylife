@@ -19,7 +19,6 @@ package de.siphalor.bouncylife.mixin;
 import de.siphalor.bouncylife.BouncyLife;
 import de.siphalor.bouncylife.entity.PetSlimeEntity;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -47,8 +46,7 @@ public abstract class MixinMobEntity extends LivingEntity {
 
 	@Inject(
 			method = "interactMob",
-			at = @At("TAIL"),
-			cancellable = true
+			at = @At("TAIL")
 	)
 	public void onInteract(PlayerEntity player, Hand hand, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
 		if (world.isClient) return;
@@ -64,9 +62,9 @@ public abstract class MixinMobEntity extends LivingEntity {
 				}
 
 				int size = ((SlimeEntity) (Object) this).getSize();
-				int randBound = size * (4 + size - BouncyLife.getArmorSliminess(player));
+				double randBound = 1D / (1.667 - 0.25 * BouncyLife.getArmorSliminess(player));
 
-				if (random.nextInt(randBound) == 0) {
+				if (random.nextDouble() < randBound) {
 					PetSlimeEntity petSlimeEntity = PetSlimeEntity.of((SlimeEntity) (Object) this);
 					petSlimeEntity.setOwner(player);
 					petSlimeEntity.setPersistent();
@@ -74,7 +72,7 @@ public abstract class MixinMobEntity extends LivingEntity {
 					world.spawnEntity(petSlimeEntity);
 					world.sendEntityStatus(petSlimeEntity, (byte) 7);
 				} else {
-					Packet<?> packet = new ParticleS2CPacket(ParticleTypes.SMOKE, false, getX(), getY(), getZ(), getWidth(), getHeight(), getWidth(), 0.1F, size * 4);
+					Packet<?> packet = new ParticleS2CPacket(ParticleTypes.SMOKE, false, getX(), getY(), getZ(), getWidth() * 0.5F, getHeight() * 0.5F, getWidth() * 0.5F, 0.03F, size * 4);
 					for (ServerPlayerEntity sp : PlayerLookup.tracking(this)) {
 						sp.networkHandler.sendPacket(packet);
 					}
