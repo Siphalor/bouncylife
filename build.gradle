@@ -57,7 +57,7 @@ dependencies {
 
 	modImplementation(include("com.github.Chocohead:Fabric-ASM:v2.1"))
 
-	modImplementation(include("de.siphalor:pushtocraft-$minecraft_major_version:1.0.6"))
+	modImplementation(include("de.siphalor:pushtocraft-$minecraft_major_version:1.0.6+mc+"))
 }
 
 license {
