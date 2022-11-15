@@ -18,6 +18,7 @@ package de.siphalor.bouncylife;
 
 import com.google.common.base.CaseFormat;
 import com.mojang.datafixers.util.Pair;
+import de.siphalor.bouncylife.mixin.ItemAccessor;
 import de.siphalor.tweed4.annotated.*;
 import de.siphalor.tweed4.config.ConfigEnvironment;
 import de.siphalor.tweed4.config.ConfigScope;
@@ -37,6 +38,17 @@ public class BLConfig {
 
 	@AConfigBackground("textures/block/stripped_spruce_log.png")
 	public static class Bounce {
+		@AConfigEntry(comment = "The maximum amount of uses for the slime fork." +
+				"Set to 0 for infinite uses.")
+		public int forkMaxDamage = 0;
+
+		@AConfigListener("fork-max-damage")
+		public void forkDamageChanged() {
+			if (BouncyLife.slimeFork != null) {
+				((ItemAccessor) BouncyLife.slimeFork).setMaxDamage(forkMaxDamage);
+			}
+		}
+
 		@AConfigEntry(comment = "Sets the factor used when determining the velocity after the fork has been used", constraints = {
 				@AConfigConstraint(value = RangeConstraint.class, param = "0..100")
 		})

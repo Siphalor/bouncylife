@@ -28,6 +28,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -103,5 +104,9 @@ public class SlimeForkItem extends Item {
 			((ServerPlayerEntity) entity).networkHandler.sendPacket(packet);
 		}
 		shooter.world.playSoundFromEntity(null, shooter, BouncyLife.soundForkShoot, SoundCategory.PLAYERS, 1F, 1F);
+		stack.damage(1, shooter, s -> s.sendToolBreakStatus(shooter.getActiveHand()));
+		if (shooter instanceof PlayerEntity) {
+			((PlayerEntity) shooter).incrementStat(Stats.USED.getOrCreateStat(stack.getItem()));
+		}
 	}
 }
