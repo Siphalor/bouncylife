@@ -3,6 +3,7 @@
 	"package": "de.siphalor.bouncylife.mixin",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
+		"ItemAccessor",
 		"MixinBlock",
 		"MixinCampfireBlockEntity",
 		"MixinLivingEntity",

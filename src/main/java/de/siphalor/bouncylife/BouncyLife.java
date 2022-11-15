@@ -19,6 +19,9 @@ package de.siphalor.bouncylife;
 import com.chocohead.mm.api.ClassTinkerers;
 import de.siphalor.bouncylife.enchantment.ForkPowerEnchantment;
 import de.siphalor.bouncylife.entity.PetSlimeEntity;
+import de.siphalor.tweed4.Tweed;
+import de.siphalor.tweed4.config.ConfigLoader;
+import de.siphalor.tweed4.config.TweedRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -82,6 +85,9 @@ public class BouncyLife implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Tweed.runEntryPoints();
+		ConfigLoader.initialReload(TweedRegistry.getConfigFile(MOD_ID), Tweed.getCurrentEnvironment());
+
 		honeyTag = TagKey.of(Registry.ITEM_KEY, new Identifier(MOD_ID, "honey"));
 
 		forkEnchantmentTarget = ClassTinkerers.getEnum(EnchantmentTarget.class, "BOUNCYLIFE_FORK");
@@ -98,7 +104,7 @@ public class BouncyLife implements ModInitializer {
 		chestplate    = register(Registry.ITEM, "slime_chestplate", new ArmorItem(slimeMaterial, EquipmentSlot.CHEST, new Item.Settings().group(itemGroup)));
 		leggings      = register(Registry.ITEM, "slime_leggings",   new ArmorItem(slimeMaterial, EquipmentSlot.LEGS,  new Item.Settings().group(itemGroup)));
 		shoes         = register(Registry.ITEM, "slime_shoes",      new ArmorItem(slimeMaterial, EquipmentSlot.FEET,  new Item.Settings().group(itemGroup)));
-		slimeFork     = register(Registry.ITEM, "slime_fork",       new SlimeForkItem(new Item.Settings().maxDamage(100).group(itemGroup)));
+		slimeFork     = register(Registry.ITEM, "slime_fork",       new SlimeForkItem(new Item.Settings().maxDamage(BLConfig.bounce.forkMaxDamage).group(itemGroup)));
 		slimeOnAStick = register(Registry.ITEM, "slime_on_a_stick", new Item(new Item.Settings().maxCount(1).group(itemGroup)));
 		poppedSlime   = register(Registry.ITEM, "popped_slime",     new PoppedSlimeItem(
 				new Item.Settings().maxCount(1).group(itemGroup).food(new FoodComponent.Builder().hunger(3).saturationModifier(0.8F).build()))
