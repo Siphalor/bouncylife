@@ -17,11 +17,15 @@
 package de.siphalor.bouncylife.mixin;
 
 import net.minecraft.item.Item;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(Item.class)
 public interface ItemAccessor {
+	@Final
+	@Mutable
 	@Accessor
 	void setMaxDamage(int maxDamage);
 }
